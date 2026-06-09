@@ -40,7 +40,7 @@ dragon-tiger boards, quantitative factors, macro indicators, and more.
 
 ## Data Service Platform
 
-**Platform URL:** <https://data.tianqis.com>
+**Platform URL:** <https://www.apocdata.com>
 
 The data service platform is the unified entry point for ApocData. It provides:
 
