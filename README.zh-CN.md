@@ -36,7 +36,7 @@ ApocData（天启至数）专注于为 AI Agent 提供 A 股市场数据服务�
 
 ## 数据服务平台
 
-**平台网址：** <https://data.tianqis.com>
+**平台网址：** <https://www.apocdata.com>
 
 数据服务平台是 ApocData 的统一入口，提供：
 
