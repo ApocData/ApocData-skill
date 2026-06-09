@@ -700,8 +700,9 @@ curl -s "$BASE/announcements?symbol=000001"
 # 按日期区间查（YYYYMMDD）
 curl -s "$BASE/announcements?symbol=000001&startDate=20260101&endDate=20260331&limit=30"
 
-# 按公告类型精确过滤
-curl -s "$BASE/announcements?symbol=000001&category=annual_report"
+# 按公告类型精确过滤（注意：category 取值较粗，实际为 company_announcement / policy_news，
+# 并非 annual_report 这类细分报告类型；要定位"年报/定增"等具体报告请用 q 标题关键字）
+curl -s "$BASE/announcements?symbol=000001&category=company_announcement"
 
 # 按标题关键字模糊搜索（不走 content 全文；q 含中文，用 -G --data-urlencode，否则 bash 直传 400）
 curl -s -G "$BASE/announcements" --data-urlencode "symbol=000001" --data-urlencode "q=年度报告"
@@ -716,7 +717,7 @@ curl -s "$BASE/announcements?symbol=000001&limit=20&includeContent=false&fields=
 **示例问题**：
 - 「平安银行最近发布了哪些公告？」（默认 5 条）
 - 「工行 2026 年 1-3 月所有公告」（startDate + endDate + limit=30）
-- 「茅台 2025 年报全文」（category=annual_report，再读 content）
+- 「茅台 2025 年报全文」（用 `q=年度报告` 定位，再读 content；category 不区分报告细分类型）
 - 「中国国航有没有定增公告？」（q=定增）
 
 > 历史版本上限是 5 条且无过滤；自 2026-05-27 起增加区间/类型/关键字过滤，上限提到 30。
@@ -993,22 +994,20 @@ curl -s "$BASE/profile/full?symbol=688017"
 
 ### K2. 量化因子分类目录 `factor-categories`
 
-返回 11 个 event_type 业务分类的人类可读说明 + 各类因子数量。配合 `factors` 使用：`factors` 列出 150+ 因子（脱敏），`factor-categories` 解释每个分类是干什么的。
+返回 **15 个** event_type 业务分类的人类可读说明 + 各类因子数量（`factor_count`）。配合 `factors` 使用：`factors` 列出 **154** 个因子（脱敏），`factor-categories` 解释每个分类是干什么的。
+
+> 注：15 个类目中**当前实际有因子的是 6 个**（合计 154）；另外 9 个（价值/成长/盈利质量/动量反转/博弈/资金情绪/波动率/流动性/规模杠杆）类目已建但 `factor_count` 当前为 0。
 
 ```bash
 curl -s "$BASE/factor-categories"
-# 返回: [
-#   { "event_type_label": "价值", "description": "基于估值水平选股：PE/PB/PS/...", "factor_count": 15 },
-#   { "event_type_label": "成长", "description": "营收/净利润增速、研发增速...", "factor_count": 17 },
-#   { "event_type_label": "盈利质量", ... },
-#   { "event_type_label": "动量反转", ... },
-#   { "event_type_label": "博弈", ... },
-#   { "event_type_label": "资金情绪", ... },
-#   { "event_type_label": "技术信号", ... },
-#   { "event_type_label": "微观结构", ... },
-#   { "event_type_label": "波动率", ... },
-#   { "event_type_label": "流动性", ... },
-#   { "event_type_label": "规模杠杆", ... }
+# 返回 15 个类目；当前有因子的（factor_count>0，合计 154）：
+#   { "event_type_label": "基本面事件", "factor_count": 68 },
+#   { "event_type_label": "技术信号",   "factor_count": 61 },
+#   { "event_type_label": "资金异动",   "factor_count": 18 },
+#   { "event_type_label": "价格异动",   "factor_count": 4 },
+#   { "event_type_label": "微观结构",   "factor_count": 2 },
+#   { "event_type_label": "资金流",     "factor_count": 1 },
+#   其余 9 个（价值/成长/盈利质量/动量反转/博弈/资金情绪/波动率/流动性/规模杠杆）factor_count 当前为 0
 # ]
 ```
 
