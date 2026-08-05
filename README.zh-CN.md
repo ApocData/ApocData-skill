@@ -1,6 +1,6 @@
 # ApocData · 天启至数 · A 股数据 Skill
 
-> 免鉴权、零依赖，用 `curl` 直接调用 A 股行情 / 财务 / 资金 / 因子 / 公告等 45+ 数据接口，
+> 免鉴权、零依赖，用 `curl` 直接调用 A 股行情 / 财务 / 资金 / 因子 / 公告等 46 个活跃数据接口，
 > 支持 Claude、ChatGPT、通义千问、Kimi、DeepSeek 等所有支持工具调用的 AI Agent。
 
 本仓库提供的 [`SKILL.md`](./SKILL.md) 是一份可直接装入 AI Agent 的能力卡片，
@@ -55,9 +55,10 @@ ApocData（天启至数）专注于为 AI Agent 提供 A 股市场数据服务�
 ### macOS / Linux
 
 ```bash
+# 固定版本 v1.1.0，查看最新版本: https://github.com/ApocData/ApocData-skill/releases
 mkdir -p ~/.claude/skills/apocdata
 curl -o ~/.claude/skills/apocdata/SKILL.md \
-  https://raw.githubusercontent.com/ApocData/ApocData-skill/main/SKILL.md
+  https://raw.githubusercontent.com/ApocData/ApocData-skill/v1.1.0/SKILL.md
 ```
 
 ### Windows (PowerShell)
@@ -65,7 +66,7 @@ curl -o ~/.claude/skills/apocdata/SKILL.md \
 ```powershell
 New-Item -ItemType Directory -Force -Path ~\.claude\skills\apocdata
 Invoke-WebRequest `
-  -Uri https://raw.githubusercontent.com/ApocData/ApocData-skill/main/SKILL.md `
+  -Uri https://raw.githubusercontent.com/ApocData/ApocData-skill/v1.1.0/SKILL.md `
   -OutFile ~\.claude\skills\apocdata\SKILL.md
 ```
 
@@ -74,7 +75,7 @@ Invoke-WebRequest `
 ```bash
 mkdir -p ~/.claude/skills/apocdata
 curl -o ~/.claude/skills/apocdata/SKILL.md \
-  https://gitee.com/apocdata/ApocData-skill/raw/main/SKILL.md
+  https://gitee.com/apocdata/ApocData-skill/raw/v1.1.0/SKILL.md
 ```
 
 重启 Claude Code 或 Claude Desktop 后自动生效。
@@ -101,7 +102,7 @@ curl -s "$BASE/stock?symbol=000001"
 
 ## 接口能力总览
 
-共 45 个接口，按数据维度分类如下：
+共 46 个活跃接口（`/news` 已下线，不计入），按数据维度分类如下：
 
 ### 实时行情与 K 线（7）
 
@@ -166,11 +167,11 @@ curl -s "$BASE/stock?symbol=000001"
 | `ths-boards`       | 同花顺行业 / 概念板块 |
 | `ths-board-stocks` | 同花顺板块成分股    |
 
-### 新闻与公告（2）
+### 新闻与公告（1 活跃，1 已下线）
 
 | 接口              | 说明                          |
 | --------------- | --------------------------- |
-| `news`          | 个股最近新闻（标题 / 链接 / 情绪）        |
+| ~~`news`~~      | **已下线** — 调用返回 HTTP 410 + 迁移提示，请改用 `/announcements`。 |
 | `announcements` | 公司公告（含 AI 摘要与 Markdown 全文） |
 
 ### 宏观经济（3）
@@ -197,6 +198,13 @@ curl -s "$BASE/stock?symbol=000001"
 | ------------------- | --------- |
 | `convertible-bonds` | 可转债基本信息   |
 | `cb-price-chg`      | 可转债转股价变动记录 |
+
+### Agent 增强（2）
+
+| 接口                | 说明                       |
+| ------------------- | -------------------------- |
+| `profile/full`      | 个股 8 维综合画像聚合      |
+| `factor-categories` | 量化因子业务分类目录与数量 |
 
 ---
 
