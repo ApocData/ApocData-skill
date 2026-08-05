@@ -1,3 +1,8 @@
+---
+name: apocdata
+description: Use when users ask for A-share or Hong Kong, China stock market quotes, financials, capital flows, technical factors, announcements, sectors, convertible bonds, macro data, or comprehensive stock analysis through the ApocData public API.
+---
+
 # 天启至数™ · ApocData Skill — A 股数据 Skill
 
 > **天启技能** —— 免鉴权，零依赖，直接用 curl 调用，支持 Claude / OpenAI / 通义千问等所有 Agent。
@@ -5,8 +10,8 @@
 ## 安装（两步，无需 pip）
 
 ```bash
-mkdir -p ~/.claude/skills/ApocData-skill
-curl -o ~/.claude/skills/ApocData-skill/SKILL.md \
+mkdir -p ~/.claude/skills/apocdata
+curl -o ~/.claude/skills/apocdata/SKILL.md \
   https://raw.githubusercontent.com/ApocData/ApocData-skill/main/SKILL.md
 ```
 
@@ -30,12 +35,14 @@ curl -s "$BASE/stock?symbol=000001"
 
 ### OpenAPI 3 接入（GPT Actions / Coze / Dify / n8n / Zapier）
 
-后端基于 Knife4j + springdoc，**自动生成符合 OpenAPI 3.1 规范的 schema**：
+提供标准 **OpenAPI 3.0 JSON**，可一键导入到 GPT Actions / Coze / Dify / n8n / Zapier 等平台，自动生成全部公开接口：
 
 | 端点 | 用途 |
 |---|---|
-| `https://data.tianqis.com/doc.html` | Knife4j UI，浏览器可交互测试 |
-| `https://data.tianqis.com/api/blade-dataplatform/v3/api-docs` | OpenAPI 3 JSON，**导入到 GPT Actions / Coze / Dify / n8n 一键接入** |
+| `https://data.tianqis.com/api/blade-dataplatform/open/data/openapi.json` | **OpenAPI 3 JSON（推荐，导入即用）**，免鉴权匿名访问，覆盖全部公开接口 |
+
+> spec 的 `servers.url` 已内置为公网基址，导入后各接口路径直接拼接即可调用，无需再改 base。
+> 注：Knife4j 默认页 `doc.html` 与 springdoc 默认 `/v3/api-docs` 在公网域名下被前端 SPA 路由占用、不对外；对接一律以上面的 `openapi.json` 为准。
 
 无需注册，匿名可访问。
 
@@ -76,21 +83,20 @@ curl -s "$BASE/stock?symbol=000001"
 | `quotes` | 10 只 symbol | 多传的会被丢弃 |
 | `ranking` / `limit-list` / `dragon-tiger` / `limit-step` / `hot-money-detail` / `sector-flow` / `concepts` / `concept-stocks` / `ths-boards` / `ths-board-stocks` / `hot-rank` | 50 | 静默截断 |
 | `announcements` | 5 | 单条含 Markdown 全文 5-10KB，token 紧张时优先调 1-2 条 |
-| `news` / `survey` / `block-trade` / `holder-number` / `share-float` / `repurchase` / `dividend` / `moneyflow` / `hsgt` / `hk-hold` / `cb-price-chg` / `tech-factor` / `cyq-perf` / `express` / `margin` / `financial` | 见各接口示例 | 通常 10 或 4 |
+| `survey` / `block-trade` / `holder-number` / `share-float` / `repurchase` / `dividend` / `moneyflow` / `hsgt` / `hk-hold` / `hk-daily` / `cb-price-chg` / `tech-factor` / `cyq-perf` / `express` / `margin` / `financial` | 见各接口示例 | 通常 10 或 4 |
 | `calendar` | 起止跨度 ≤ 366 天 | **超范围会显式报错（非静默）** |
 
 ### 数据稀疏接口（返回空数组 ≠ 接口异常）
 
 | 接口 | 已知情况 | 建议 |
 |---|---|---|
-| `news` | 仅在显著事件触发时入库，冷门股 7 天可能 0 条 | 配合 `announcements` 使用 |
 | `express` | 仅季报前后约 1 个月窗口有数据 | 没数据时改查 `financial` |
 | `block-trade` / `survey` | 部分小盘股长期无大宗/无调研 | 空返回不代表股票有问题 |
 
 ### 参数易错点（来自实测）
 
 - **枚举参数优先用英文**：`sector-flow?type=industry/concept/region`（中文 `行业/概念/地域` 仍兼容但需 URL 编码，bash 直传中文偶发被吞）
-- **中文搜索关键字必须 URL 编码**：`q=` / `industry=` 等带中文时（如 `news?q=减持`、`announcements?q=年报`、`stocks?q=银行`），bash 直接拼 URL 会 `HTTP 400`；请用 `curl -G --data-urlencode "q=减持"`，或在代码里交给 HTTP 客户端自动编码
+- **中文搜索关键字必须 URL 编码**：`q=` / `industry=` 等带中文时（如 `announcements?q=年报`、`stocks?q=银行`），bash 直接拼 URL 会 `HTTP 400`；请用 `curl -G --data-urlencode "q=年报"`，或在代码里交给 HTTP 客户端自动编码
 - **symbol vs tsCode**：A 股个股一律 6 位数字 `symbol=000001`（不带交易所后缀）；指数用带后缀的 `tsCode=000300.SH`；可转债正股反查用 `stkCode=688535.SH`
 - **日期格式统一 YYYYMMDD**：start/end 必须**成对**传入，单传无效
 - **错误参数会静默回退默认值**（如 `direction=foobar` 会回退到 `direction=gain` 返回涨幅榜），LLM 拼错时返回数据**看起来正常但语义错**，请校验返回中的字段含义是否符合预期
@@ -144,7 +150,7 @@ curl -s "$BASE/stock?symbol=000001"
 
 ### 字段裁剪 `?fields=`（token 优化，全局支持）
 
-**所有 47 个接口都支持** `?fields=col1,col2,...` 字段白名单，节省 LLM token。响应只保留指定字段，列序保持参数顺序，不存在的字段自动忽略：
+**所有 46 个公开接口都支持** `?fields=col1,col2,...` 字段白名单，节省 LLM token。响应只保留指定字段，列序保持参数顺序，不存在的字段自动忽略：
 
 ```bash
 # 财务接口只取关键字段（60+ 字段 → 3 字段）
@@ -206,7 +212,7 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 | 接口类别 | max-age | 包含接口 |
 |---|---|---|
 | **盘中实时** | `5s` | `quote` / `quotes` / `ranking` / `hot-rank` / `sector-flow` / `moneyflow` / `limit-list` / `limit-step` / `dragon-tiger` / `hot-money-detail` |
-| **盘后日更** | `5min`（300s） | `daily` / `index-daily` / `hsgt` / `hk-hold` / `margin` / `cyq-perf` / `tech-factor` / `financial` / `express` / `dividend` / `share-float` / `repurchase` / `holder-number` / `block-trade` / `announcements` / `news` / `survey` / `holders` |
+| **盘后日更** | `5min`（300s） | `daily` / `index-daily` / `hk-daily` / `hsgt` / `hk-hold` / `margin` / `cyq-perf` / `tech-factor` / `financial` / `express` / `dividend` / `share-float` / `repurchase` / `holder-number` / `block-trade` / `announcements` / `survey` / `holders` |
 | **元数据/低频** | `1h`（3600s） | `stock` / `stocks` / `st` / `indexes` / `factors` / `factor-categories` / `concepts*` / `ths-boards*` / `convertible-bonds` / `cb-price-chg` / `hot-money` / `calendar` / `macro*` |
 | **综合画像** | `30s` | `profile/full`（取所有子接口最严约束） |
 | **错误响应** | `no-store` | 所有 `success=false`（防止错误结果被中间层固化） |
@@ -221,7 +227,7 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 |---|---|---|
 | `intraday` | 盘中实时（FREE 套餐 15min 延迟） | `quote` / `quotes` / `ranking` / `hot-rank` / `sector-flow` / `moneyflow` |
 | `post-close` | 盘后批量更新 | 16:30：`limit-list` / `limit-step` / `dragon-tiger` / `hot-money-detail` / `cyq-perf`；17:00-18:00：`daily` / `index-daily` / `hk-daily` / `tech-factor` / `margin` / `block-trade`；20:00：`hsgt` / `hk-hold` |
-| `t0-morning` | 当天 T+0 早上 08:00 入库 | `announcements` / `news` / `survey` |
+| `t0-morning` | 当天 T+0 早上 08:00 入库 | `announcements` / `survey` |
 | `quarterly` | 季报披露窗口（报告期后约 1 个月） | `financial` / `express` / `dividend` / `share-float` / `repurchase` / `holder-number` / `holders` |
 | `metadata` | 元数据/字典低频更新 | `stock` / `stocks` / `st` / `indexes` / `factors` / `factor-categories` / `concepts*` / `ths-boards*` / `convertible-bonds` / `cb-price-chg` / `hot-money` / `calendar` / `macro*` |
 | `aggregated` | 聚合接口（取最严约束） | `profile/full` |
@@ -241,9 +247,9 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 |---|---|---|
 | [A](#a-行情与估值10-个) | 行情与估值 | 10 |
 | [B](#b-财务与基本面8-个) | 财务与基本面 | 8 |
-| [C](#c-资金博弈7-个) | 资金博弈 | 7 |
+| [C](#c-资金博弈8-个) | 资金博弈 | 8 |
 | [D](#d-涨跌停与情绪4-个) | 涨跌停与情绪 | 4 |
-| [E](#e-事件与信息3-个) | 事件与信息 | 3 |
+| [E](#e-事件与信息2-个) | 事件与信息 | 2 |
 | [F](#f-板块概念4-个) | 板块/概念 | 4 |
 | [G](#g-可转债2-个) | 可转债 | 2 |
 | [H](#h-量化与技术2-个) | 量化与技术 | 2 |
@@ -317,7 +323,11 @@ curl -s "$BASE/stock?symbol=688017"
 按名称/代码关键词搜索，支持行业过滤。
 
 ```bash
-curl -s "$BASE/stocks?q=银行&industry=银行&limit=20"
+# 中文参数必须 URL 编码
+curl -s -G "$BASE/stocks" \
+  --data-urlencode "q=银行" \
+  --data-urlencode "industry=银行" \
+  --data-urlencode "limit=20"
 curl -s "$BASE/stocks?q=688017"
 ```
 
@@ -359,7 +369,7 @@ curl -s "$BASE/ranking?direction=loss&limit=20"
 按名称/代码搜索指数。
 
 ```bash
-curl -s "$BASE/indexes?q=沪深300"
+curl -s -G "$BASE/indexes" --data-urlencode "q=沪深300"
 curl -s "$BASE/indexes?market=CSI&limit=20"
 # 返回: ts_code, name, market, publisher, category, base_date, base_point
 ```
@@ -511,7 +521,7 @@ curl -s "$BASE/block-trade?symbol=000001&limit=10"
 
 ---
 
-## C. 资金博弈（7 个）
+## C. 资金博弈（8 个）
 
 主力/北向/两融/龙虎/游资全口径资金视角。**短线择时与盯盘核心。**
 
@@ -555,22 +565,38 @@ curl -s "$BASE/hk-hold?symbol=000001&limit=10"
 
 ---
 
-### C4. 融资融券 `margin`
+### C4. 港股日K `hk-daily`
 
-两市融资融券交易汇总。
+查询中国香港股票日 K 行情，代码必须带 `.HK` 后缀。
+
+```bash
+curl -s "$BASE/hk-daily?tsCode=00700.HK&limit=30"
+# 返回: trade_date, open, high, low, close, pre_close, change, pct_chg, vol, amount
+```
+
+**示例问题**：「腾讯控股最近 30 个交易日走势」「阿里巴巴-SW 昨天涨了多少？」
+
+---
+
+### C5. 融资融券 `margin`
+
+两市融资融券交易汇总（**交易所级别聚合**）。
+
+> ⚠️ 本接口仅支持按交易所（`exchange=SSE/SZSE/BSE`）筛选，**不支持按个股过滤**（`symbol` 参数无效）。  
+> 要查个股资金流向请用 `/moneyflow`。
 
 ```bash
 curl -s "$BASE/margin?exchange=SSE&limit=10"
-# exchange 可选 SSE/SZSE/BSE，不传则全部
+# exchange 可选 SSE/SZSE/BSE，不传则返回三所合并
 # 返回: trade_date, exchange_id, rzye（融资余额）, rzmre（融资买入额）,
 #       rqye（融券余额）, rzrqye（融资融券余额）
 ```
 
-**示例问题**：「最近两融余额是多少？」「融资余额在增加吗？」
+**示例问题**：「最近两融余额是多少？」「融资余额在增加吗？」「上交所两融情况？」
 
 ---
 
-### C5. 龙虎榜 `dragon-tiger`
+### C6. 龙虎榜 `dragon-tiger`
 
 某交易日龙虎榜单，或某个股的上榜历史。
 
@@ -587,7 +613,7 @@ curl -s "$BASE/dragon-tiger?symbol=000001"
 
 ---
 
-### C6. 游资名录 `hot-money`
+### C7. 游资名录 `hot-money`
 
 知名游资席位名录。
 
@@ -600,7 +626,7 @@ curl -s "$BASE/hot-money?limit=50"
 
 ---
 
-### C7. 游资交易明细 `hot-money-detail`
+### C8. 游资交易明细 `hot-money-detail`
 
 某交易日游资买卖明细，或某个股的游资记录。
 
@@ -683,9 +709,9 @@ curl -s "$BASE/cyq-perf?symbol=000001&limit=5"
 
 ---
 
-## E. 事件与信息（3 个）
+## E. 事件与信息（2 个）
 
-公告、新闻、机构调研三大文本类信息源。**事件驱动策略的输入。**
+公告、机构调研两类事件信息源。**事件驱动策略的输入。**
 
 ### E1. 公司公告 `announcements`
 
@@ -724,39 +750,7 @@ curl -s "$BASE/announcements?symbol=000001&limit=20&includeContent=false&fields=
 
 ---
 
-### E2. 最近新闻 `news`
-
-按股票查媒体新闻，**支持区间/类型/情绪过滤**，上限 30 条。
-
-```bash
-# 默认：最近 72h，最多 10 条
-curl -s "$BASE/news?symbol=000001"
-# 返回: title, publish_time, source, url, category, sentiment, importance, keywords
-
-# 按时间区间过滤（YYYYMMDD），优先级高于 hours
-curl -s "$BASE/news?symbol=000001&startDate=20260501&endDate=20260527&limit=30"
-
-# 只看负面新闻
-curl -s "$BASE/news?symbol=000001&sentiment=bearish&limit=30"
-
-# 高重要性 + 关键字（q 含中文，用 -G --data-urlencode，否则 bash 直传 400）
-curl -s -G "$BASE/news" --data-urlencode "symbol=000001" --data-urlencode "importance=high" --data-urlencode "q=减持"
-
-# 组合：最近一周高重要性的负面新闻
-curl -s "$BASE/news?symbol=000001&hours=168&importance=high&sentiment=bearish"
-```
-
-**示例问题**：
-- 「平安银行最近有什么新闻？」（默认）
-- 「茅台 5 月所有负面新闻？」（startDate + endDate + sentiment=bearish）
-- 「中国国航最近有没有高重要性新闻？」（importance=high）
-- 「工行最近一周关于减持的新闻？」（hours=168 + q=减持）
-
-> 历史版本只有 symbol/hours/limit；自 2026-05-27 起增加 startDate/endDate/category/q/sentiment/importance 过滤，limit 上限提到 30。
-
----
-
-### E3. 机构调研 `survey`
+### E2. 机构调研 `survey`
 
 个股机构调研接待记录。
 
@@ -805,7 +799,7 @@ curl -s "$BASE/concept-stocks?themeCode=000894.DC&limit=50"
 同花顺行业/概念板块指数。
 
 ```bash
-curl -s "$BASE/ths-boards?q=机器人&limit=30"
+curl -s -G "$BASE/ths-boards" --data-urlencode "q=机器人" --data-urlencode "limit=30"
 # 返回: ts_code, name, count（成分数）, exchange, list_date, type
 ```
 
@@ -835,7 +829,7 @@ curl -s "$BASE/ths-board-stocks?tsCode=886108.TI&limit=50"
 可转债基本信息（按债券或正股搜索）。
 
 ```bash
-curl -s "$BASE/convertible-bonds?q=超声"
+curl -s -G "$BASE/convertible-bonds" --data-urlencode "q=超声"
 curl -s "$BASE/convertible-bonds?stkCode=688535.SH"
 # 返回: ts_code, bond_short_name, stk_code, stk_short_name, issue_size,
 #       value_date, maturity_date, coupon_rate, conv_price
@@ -865,11 +859,15 @@ curl -s "$BASE/cb-price-chg?tsCode=127026.SZ&limit=10"
 
 ### H1. 量化因子注册表 `factors`
 
-平台全部已启用的量化因子清单，脱敏返回（不含计算公式/权重/打分）。
+平台全部已启用的量化因子**元数据清单**（154 个，脱敏，不含计算公式/权重/打分）。
+
+> ⚠️ 本接口返回的是**平台因子注册表**（因子名称、分类、是否启用），**不含个股因子值**，也不接受 `symbol` 参数。  
+> 要查某股票的 MACD/KDJ/RSI 等技术指标实际值，请用 `/tech-factor`。
 
 ```bash
 curl -s "$BASE/factors"
 # 返回: rule_id, name, event_type_label, scope, enabled, version, updated_at
+# 注意：这是因子配置注册表，非个股计算结果
 ```
 
 **示例问题**：「平台支持哪些量化因子？」「有没有和涨停/事件相关的因子？」
@@ -1081,7 +1079,7 @@ curl -s "$BASE/dragon-tiger?limit=30"
 
 ```bash
 # 1) 可转债列表 / 关键词搜索
-curl -s "$BASE/convertible-bonds?q=超声"
+curl -s -G "$BASE/convertible-bonds" --data-urlencode "q=超声"
 # 2) 转股价历史调整（看下修信号）
 curl -s "$BASE/cb-price-chg?tsCode=127026.SZ&limit=10"
 # 3) 配合正股行情判断折溢价
