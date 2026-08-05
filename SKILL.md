@@ -1,8 +1,3 @@
----
-name: apocdata
-description: Use when users ask for A-share or Hong Kong, China stock market quotes, financials, capital flows, technical factors, announcements, sectors, convertible bonds, macro data, or comprehensive stock analysis through the ApocData public API.
----
-
 # 天启至数™ · ApocData Skill — A 股数据 Skill
 
 > **天启技能** —— 免鉴权，零依赖，直接用 curl 调用，支持 Claude / OpenAI / 通义千问等所有 Agent。
@@ -10,8 +5,8 @@ description: Use when users ask for A-share or Hong Kong, China stock market quo
 ## 安装（两步，无需 pip）
 
 ```bash
-mkdir -p ~/.claude/skills/apocdata
-curl -o ~/.claude/skills/apocdata/SKILL.md \
+mkdir -p ~/.claude/skills/ApocData-skill
+curl -o ~/.claude/skills/ApocData-skill/SKILL.md \
   https://raw.githubusercontent.com/ApocData/ApocData-skill/main/SKILL.md
 ```
 
@@ -1111,4 +1106,4 @@ curl -s "$BASE/margin?limit=10"      # 两融变化
 - **数据为空 ≠ 接口异常**，参考「数据稀疏接口」段落；不存在的 symbol 会返回 200 + 空对象
 - **错误参数会静默回退**默认值（不报错），LLM 拼错枚举值时返回看似正常的数据可能语义不符，请校验
 - **token 紧张时**：优先调 `stock`/`quote`/`tech-factor` 等扁平接口；`financial`（单条 60+ 字段）和 `announcements`（含 Markdown 全文）按需酌情减少 limit
-- 数据来源：天启云(ApocData Cloud)，与 A 股数据落库周期同步（实时行情 14:55 滚动，公告 T+0 当天 08:00，北向 20:00）
+- 数据来源：天启云( Cloud)，与 A 股数据落库周期同步（实时行情 14:55 滚动，公告 T+0 当天 08:00，北向 20:00）
