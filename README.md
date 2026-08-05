@@ -1,6 +1,6 @@
 # ApocData · A-Share AI Data Skill
 
-> Zero-auth, zero-dependency. Use `curl` to call 45+ A-share data endpoints
+> Zero-auth, zero-dependency. Use `curl` to call 46 active A-share data endpoints
 > (quotes / financials / fund flows / factors / announcements / macro).
 > Compatible with Claude, ChatGPT, Qwen, Kimi, DeepSeek and any AI agent
 > that supports tool calling.
@@ -59,9 +59,10 @@ The data service platform is the unified entry point for ApocData. It provides:
 ### macOS / Linux
 
 ```bash
+# Pinned to v1.1.0 — check https://github.com/ApocData/ApocData-skill/releases for latest
 mkdir -p ~/.claude/skills/apocdata
 curl -o ~/.claude/skills/apocdata/SKILL.md \
-  https://raw.githubusercontent.com/ApocData/ApocData-skill/main/SKILL.md
+  https://raw.githubusercontent.com/ApocData/ApocData-skill/v1.1.0/SKILL.md
 ```
 
 ### Windows (PowerShell)
@@ -69,7 +70,7 @@ curl -o ~/.claude/skills/apocdata/SKILL.md \
 ```powershell
 New-Item -ItemType Directory -Force -Path ~\.claude\skills\apocdata
 Invoke-WebRequest `
-  -Uri https://raw.githubusercontent.com/ApocData/ApocData-skill/main/SKILL.md `
+  -Uri https://raw.githubusercontent.com/ApocData/ApocData-skill/v1.1.0/SKILL.md `
   -OutFile ~\.claude\skills\apocdata\SKILL.md
 ```
 
@@ -78,7 +79,7 @@ Invoke-WebRequest `
 ```bash
 mkdir -p ~/.claude/skills/apocdata
 curl -o ~/.claude/skills/apocdata/SKILL.md \
-  https://gitee.com/apocdata/ApocData-skill/raw/main/SKILL.md
+  https://gitee.com/apocdata/ApocData-skill/raw/v1.1.0/SKILL.md
 ```
 
 Restart Claude Code or Claude Desktop after installation. The Skill takes
@@ -107,7 +108,7 @@ see [`SKILL.md`](./SKILL.md).
 
 ## Endpoint Overview
 
-45 endpoints in total, grouped by data dimension:
+46 active endpoints in total, grouped by data dimension (`/news` deprecated, not counted):
 
 ### Real-time Quotes & K-line (7)
 
@@ -172,11 +173,11 @@ see [`SKILL.md`](./SKILL.md).
 | `ths-boards`       | THS industry / concept boards |
 | `ths-board-stocks` | THS board constituents       |
 
-### News & Announcements (2)
+### News & Announcements (1 active, 1 deprecated)
 
 | Endpoint        | Description                              |
 | --------------- | ---------------------------------------- |
-| `news`          | Recent news (title / link / sentiment)   |
+| ~~`news`~~      | **Deprecated** — returns HTTP 410 + migration hint. Use `/announcements` instead. |
 | `announcements` | Company announcements (AI summary + markdown) |
 
 ### Macro Economics (3)
@@ -203,6 +204,13 @@ see [`SKILL.md`](./SKILL.md).
 | ------------------- | --------------------------------- |
 | `convertible-bonds` | Convertible bond basic info       |
 | `cb-price-chg`      | Conversion price change records   |
+
+### Agent Enhancements (2)
+
+| Endpoint            | Description                                  |
+| ------------------- | -------------------------------------------- |
+| `profile/full`      | Aggregated 8-dimension stock profile         |
+| `factor-categories` | Quant factor business categories and counts |
 
 ---
 
