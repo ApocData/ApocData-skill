@@ -1,3 +1,8 @@
+---
+name: apocdata
+description: Use when users ask for A-share or Hong Kong, China stock quotes, financials, capital flows, technical factors, news, announcements, sectors, convertible bonds, macro data, or comprehensive stock analysis through the ApocData public API.
+---
+
 # 天启至数™ · ApocData Skill — A 股数据 Skill
 
 > **天启技能** —— 免鉴权，零依赖，直接用 curl 调用，支持 Claude / OpenAI / 通义千问等所有 Agent。
@@ -5,9 +10,11 @@
 ## 安装（两步，无需 pip）
 
 ```bash
-mkdir -p ~/.claude/skills/ApocData-skill
-curl -o ~/.claude/skills/ApocData-skill/SKILL.md \
-  https://raw.githubusercontent.com/ApocData/ApocData-skill/main/SKILL.md
+# 固定版本 v1.1.0，避免 main 分支变动导致不可预期更新
+# 查看最新版本: https://github.com/ApocData/ApocData-skill/releases
+mkdir -p ~/.claude/skills/apocdata
+curl -L --fail -o ~/.claude/skills/apocdata/SKILL.md \
+  https://raw.githubusercontent.com/ApocData/ApocData-skill/v1.1.0/SKILL.md
 ```
 
 重启 Claude Code 后自动生效。
@@ -55,6 +62,7 @@ curl -s "$BASE/stock?symbol=000001"
 | 资金动向追踪 / 「主力在干嘛」 | `moneyflow` → `hsgt` → `hk-hold` → `dragon-tiger` → `hot-money-detail` | 北向 20:00 后更新 |
 | 涨停盘后复盘 / 「今天涨停的共性」 | `limit-list?kind=U` → `limit-step` → `sector-flow` → `hot-money-detail` | date 不传默认最新交易日 |
 | 板块 / 概念热度 | `sector-flow` → `concepts` → `concept-stocks` 或 `ths-boards` → `ths-board-stocks` | 东财与同花顺双源，可交叉验证 |
+| 新闻 / 市场事件 | ~~`news?q=关键词`~~ **已下线** → 改用 `announcements` 查正式披露 | `/news` 接口已下线，调用将返回 ENDPOINT_DEPRECATED 提示 |
 | 公告 / 事件驱动 | `announcements` → `survey` → `share-float` → `repurchase` → `dividend` | announcements 返回 Markdown 全文 + AI 摘要 |
 | 大盘择时 / 宏观判断 | `index-daily?tsCode=000300.SH` → `macro/latest?type=PMI` → `macro/latest?type=CPI` → `hsgt` | 宏观接口最多 12 条 |
 | 可转债套利 | `convertible-bonds` → `cb-price-chg` → `quote`(正股) | 用 stkCode 反查正股可转债 |
@@ -77,8 +85,8 @@ curl -s "$BASE/stock?symbol=000001"
 | `macro` | 12 | 同上 |
 | `quotes` | 10 只 symbol | 多传的会被丢弃 |
 | `ranking` / `limit-list` / `dragon-tiger` / `limit-step` / `hot-money-detail` / `sector-flow` / `concepts` / `concept-stocks` / `ths-boards` / `ths-board-stocks` / `hot-rank` | 50 | 静默截断 |
-| `announcements` | 5 | 单条含 Markdown 全文 5-10KB，token 紧张时优先调 1-2 条 |
-| `survey` / `block-trade` / `holder-number` / `share-float` / `repurchase` / `dividend` / `moneyflow` / `hsgt` / `hk-hold` / `hk-daily` / `cb-price-chg` / `tech-factor` / `cyq-perf` / `express` / `margin` / `financial` | 见各接口示例 | 通常 10 或 4 |
+| `announcements` | 30 | announcements 默认 5，单条正文较长时建议取 1-5 条；~~`news`~~ 已下线 |
+| `survey` / `block-trade` / `holder-number` / `share-float` / `repurchase` / `dividend` / `moneyflow` / `hsgt` / `hk-hold` / `cb-price-chg` / `tech-factor` / `cyq-perf` / `express` / `margin` / `financial` | 见各接口示例 | 通常 10 或 4 |
 | `calendar` | 起止跨度 ≤ 366 天 | **超范围会显式报错（非静默）** |
 
 ### 数据稀疏接口（返回空数组 ≠ 接口异常）
@@ -94,8 +102,8 @@ curl -s "$BASE/stock?symbol=000001"
 - **中文搜索关键字必须 URL 编码**：`q=` / `industry=` 等带中文时（如 `announcements?q=年报`、`stocks?q=银行`），bash 直接拼 URL 会 `HTTP 400`；请用 `curl -G --data-urlencode "q=年报"`，或在代码里交给 HTTP 客户端自动编码
 - **symbol vs tsCode**：A 股个股一律 6 位数字 `symbol=000001`（不带交易所后缀）；指数用带后缀的 `tsCode=000300.SH`；可转债正股反查用 `stkCode=688535.SH`
 - **日期格式统一 YYYYMMDD**：start/end 必须**成对**传入，单传无效
-- **错误参数会静默回退默认值**（如 `direction=foobar` 会回退到 `direction=gain` 返回涨幅榜），LLM 拼错时返回数据**看起来正常但语义错**，请校验返回中的字段含义是否符合预期
-- **不存在的 symbol 返回 200 + `data: {}`**，不会报 404，需要判空
+- **错误参数返回结构化失败**：HTTP 状态码为 400，响应体为 `code=400, success=false`，并通过 `X-Tdc-Error-Code` / `X-Tdc-Error-Field` 标明错误；Agent 必须先检查 HTTP 状态和 `success`，再读取 `data`
+- **不存在的 symbol 返回 `RESOURCE_NOT_FOUND`**：响应体为 `code=400, success=false`，应校验代码或先调用 `stocks` 搜索；正常股票的 `st` 数据仍可能为 `null`
 
 ### 性能基线（实测）
 
@@ -141,11 +149,11 @@ curl -s "$BASE/stock?symbol=000001"
 | `PARAM_OUT_OF_RANGE` | 日期跨度超 366 天等 | 缩短跨度 |
 | `RESOURCE_NOT_FOUND` | symbol 在 stock_basic_info 中找不到 | 校验股票代码，或先用 stocks 搜索 |
 
-> 错误响应仍是 `{"code":400,"success":false,"msg":"..."}` 的 R 包装结构，HTTP 状态码保持 200。**结构化错误信息全部在 header 里**——这是兼容性优先的设计。
+> 参数错误响应是 `{"code":400,"success":false,"msg":"..."}` 的 R 包装结构，HTTP 状态码为 400。资源不存在默认保持兼容响应，可通过服务端开关升级为 HTTP 404。结构化错误信息同时写入 header。
 
 ### 字段裁剪 `?fields=`（token 优化，全局支持）
 
-**所有 46 个公开接口都支持** `?fields=col1,col2,...` 字段白名单，节省 LLM token。响应只保留指定字段，列序保持参数顺序，不存在的字段自动忽略：
+**所有 45 个活跃业务接口都支持** `?fields=col1,col2,...` 字段白名单（`/news` 已下线，不计入）；对 Map 或 List<Map> 响应进行裁剪，不适用的数据形状会保持原样。响应只保留指定字段，列序保持参数顺序，不存在的字段自动忽略：
 
 ```bash
 # 财务接口只取关键字段（60+ 字段 → 3 字段）
@@ -207,7 +215,7 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 | 接口类别 | max-age | 包含接口 |
 |---|---|---|
 | **盘中实时** | `5s` | `quote` / `quotes` / `ranking` / `hot-rank` / `sector-flow` / `moneyflow` / `limit-list` / `limit-step` / `dragon-tiger` / `hot-money-detail` |
-| **盘后日更** | `5min`（300s） | `daily` / `index-daily` / `hk-daily` / `hsgt` / `hk-hold` / `margin` / `cyq-perf` / `tech-factor` / `financial` / `express` / `dividend` / `share-float` / `repurchase` / `holder-number` / `block-trade` / `announcements` / `survey` / `holders` |
+| **盘后日更** | `5min`（300s） | `daily` / `index-daily` / `hsgt` / `hk-hold` / `margin` / `cyq-perf` / `tech-factor` / `financial` / `express` / `dividend` / `share-float` / `repurchase` / `holder-number` / `block-trade` / `news` / `announcements` / `survey` / `holders` |
 | **元数据/低频** | `1h`（3600s） | `stock` / `stocks` / `st` / `indexes` / `factors` / `factor-categories` / `concepts*` / `ths-boards*` / `convertible-bonds` / `cb-price-chg` / `hot-money` / `calendar` / `macro*` |
 | **综合画像** | `30s` | `profile/full`（取所有子接口最严约束） |
 | **错误响应** | `no-store` | 所有 `success=false`（防止错误结果被中间层固化） |
@@ -221,8 +229,8 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 | Tier | 含义 | 涉及接口 |
 |---|---|---|
 | `intraday` | 盘中实时（FREE 套餐 15min 延迟） | `quote` / `quotes` / `ranking` / `hot-rank` / `sector-flow` / `moneyflow` |
-| `post-close` | 盘后批量更新 | 16:30：`limit-list` / `limit-step` / `dragon-tiger` / `hot-money-detail` / `cyq-perf`；17:00-18:00：`daily` / `index-daily` / `hk-daily` / `tech-factor` / `margin` / `block-trade`；20:00：`hsgt` / `hk-hold` |
-| `t0-morning` | 当天 T+0 早上 08:00 入库 | `announcements` / `survey` |
+| `post-close` | 盘后批量更新 | 16:30：`limit-list` / `limit-step` / `dragon-tiger` / `hot-money-detail` / `cyq-perf`；17:00-18:00：`daily` / `index-daily` / `tech-factor` / `margin` / `block-trade`；20:00：`hsgt` / `hk-hold` |
+| `t0-morning` | 当天 T+0 早上 08:00 入库 | `news` / `announcements` / `survey` |
 | `quarterly` | 季报披露窗口（报告期后约 1 个月） | `financial` / `express` / `dividend` / `share-float` / `repurchase` / `holder-number` / `holders` |
 | `metadata` | 元数据/字典低频更新 | `stock` / `stocks` / `st` / `indexes` / `factors` / `factor-categories` / `concepts*` / `ths-boards*` / `convertible-bonds` / `cb-price-chg` / `hot-money` / `calendar` / `macro*` |
 | `aggregated` | 聚合接口（取最严约束） | `profile/full` |
@@ -236,15 +244,15 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 
 ## 工具列表
 
-> 全部 **46 个接口按使用场景分 11 组**，编号采用 A1/A2、B1/B2 形式以体现分组归属。同一组内的接口通常配合使用。
+> 全部 **45 个活跃业务接口按使用场景分 11 组**（`/news` 已下线），另提供 1 个 `openapi.json` 规范端点。编号采用 A1/A2、B1/B2 形式以体现分组归属。同一组内的接口通常配合使用。
 
 | 组别 | 主题 | 接口数 |
 |---|---|---|
 | [A](#a-行情与估值10-个) | 行情与估值 | 10 |
 | [B](#b-财务与基本面8-个) | 财务与基本面 | 8 |
-| [C](#c-资金博弈8-个) | 资金博弈 | 8 |
+| [C](#c-资金博弈7-个) | 资金博弈 | 7 |
 | [D](#d-涨跌停与情绪4-个) | 涨跌停与情绪 | 4 |
-| [E](#e-事件与信息2-个) | 事件与信息 | 2 |
+| [E](#e-事件与信息3-个) | 事件与信息 | 3（`news` 已下线，实际活跃 2 个） |
 | [F](#f-板块概念4-个) | 板块/概念 | 4 |
 | [G](#g-可转债2-个) | 可转债 | 2 |
 | [H](#h-量化与技术2-个) | 量化与技术 | 2 |
@@ -315,16 +323,19 @@ curl -s "$BASE/stock?symbol=688017"
 
 ### A5. 股票搜索 `stocks`
 
-按名称/代码关键词搜索，支持行业过滤。
+按名称/代码关键词搜索，支持行业和市场过滤。
 
 ```bash
 # 中文参数必须 URL 编码
 curl -s -G "$BASE/stocks" \
   --data-urlencode "q=银行" \
   --data-urlencode "industry=银行" \
+  --data-urlencode "market=主板" \
   --data-urlencode "limit=20"
 curl -s "$BASE/stocks?q=688017"
 ```
+
+**参数**：`q`（关键词）、`industry`（行业）、`market`（市场板块）、`limit`（上限 50）、`cursor`（翻页游标）
 
 **示例问题**：「帮我找所有银行股」「搜索新能源相关股票」
 
@@ -392,9 +403,8 @@ curl -s "$BASE/index-daily?tsCode=000300.SH&limit=30"
 东方财富人气榜（个股热度排名）。
 
 ```bash
-curl -s "$BASE/hot-rank?type=A股市场&limit=30"
-# type 可选 A股市场 / ETF基金
-# 返回: trade_date, ts_code, ts_name, rank, pct_change, current_price
+curl -s "$BASE/hot-rank?limit=30"
+# 返回: trade_date, ts_code, ts_name, rank, pct_change, current_price, hot, concept
 ```
 
 **示例问题**：「今天 A 股人气榜前 10 是哪些？」
@@ -407,16 +417,16 @@ curl -s "$BASE/hot-rank?type=A股市场&limit=30"
 
 ### B1. 财务数据 `financial`
 
-ROE、营收、净利润等，最多 4 期。单条返回 60+ 字段，token 紧张时建议加 `?fields=` 裁剪。
+ROE、营收、净利润等，最多 4 期。嵌套指标（如 pe_ratio/pb_ratio 等）已扁平化到顶层，直接用顶层字段名即可。单条返回 60+ 字段，token 紧张时建议加 `?fields=` 裁剪。
 
 ```bash
 curl -s "$BASE/financial?symbol=000001&limit=4"
 # 返回: report_period, report_type, roe, revenue, net_profit,
-#       grossprofit_margin, eps, bps, debt_to_assets 等 60+ 字段
+#       grossprofit_margin, eps, bps, debt_to_assets, pe_ratio, pb_ratio 等 60+ 字段
 #       注: 上述字段按报告期稀疏填充——最新期可能缺 eps/bps、银行股 grossprofit_margin 常为空，以实际返回为准
 
 # token 优化：只取关键字段（节省 90% token）
-curl -s "$BASE/financial?symbol=000001&limit=4&fields=roe,revenue,net_profit"
+curl -s "$BASE/financial?symbol=000001&limit=4&fields=roe,revenue,net_profit,pe_ratio"
 ```
 
 **示例问题**：「平安银行的 ROE 怎么样？」「最近 4 期净利润趋势」
@@ -516,7 +526,7 @@ curl -s "$BASE/block-trade?symbol=000001&limit=10"
 
 ---
 
-## C. 资金博弈（8 个）
+## C. 资金博弈（7 个）
 
 主力/北向/两融/龙虎/游资全口径资金视角。**短线择时与盯盘核心。**
 
@@ -560,20 +570,7 @@ curl -s "$BASE/hk-hold?symbol=000001&limit=10"
 
 ---
 
-### C4. 港股日K `hk-daily`
-
-查询中国香港股票日 K 行情，代码必须带 `.HK` 后缀。
-
-```bash
-curl -s "$BASE/hk-daily?tsCode=00700.HK&limit=30"
-# 返回: trade_date, open, high, low, close, pre_close, change, pct_chg, vol, amount
-```
-
-**示例问题**：「腾讯控股最近 30 个交易日走势」「阿里巴巴-SW 昨天涨了多少？」
-
----
-
-### C5. 融资融券 `margin`
+### C4. 融资融券 `margin`
 
 两市融资融券交易汇总（**交易所级别聚合**）。
 
@@ -591,7 +588,7 @@ curl -s "$BASE/margin?exchange=SSE&limit=10"
 
 ---
 
-### C6. 龙虎榜 `dragon-tiger`
+### C5. 龙虎榜 `dragon-tiger`
 
 某交易日龙虎榜单，或某个股的上榜历史。
 
@@ -608,7 +605,7 @@ curl -s "$BASE/dragon-tiger?symbol=000001"
 
 ---
 
-### C7. 游资名录 `hot-money`
+### C6. 游资名录 `hot-money`
 
 知名游资席位名录。
 
@@ -621,7 +618,7 @@ curl -s "$BASE/hot-money?limit=50"
 
 ---
 
-### C8. 游资交易明细 `hot-money-detail`
+### C7. 游资交易明细 `hot-money-detail`
 
 某交易日游资买卖明细，或某个股的游资记录。
 
@@ -704,19 +701,31 @@ curl -s "$BASE/cyq-perf?symbol=000001&limit=5"
 
 ---
 
-## E. 事件与信息（2 个）
+## E. 事件与信息（3 个）
 
-公告、机构调研两类事件信息源。**事件驱动策略的输入。**
+新闻、公告、机构调研三类事件信息源。新闻用于市场信息检索，公告用于公司正式披露。**事件驱动分析的输入。**
 
-### E1. 公司公告 `announcements`
+### E1. ~~新闻搜索 `news`~~ 【已下线】
 
-按股票查公告（标题、AI 摘要、Markdown 完整正文、公告日期、类型、链接），**支持区间/类型/关键字过滤**，上限 30 条。
+> **该接口已下线**，调用将返回 HTTP 410 + `{"success":false, "msg":"/news 接口已下线..."}`。
+> 新闻数据源不再对外提供。按股票查正式披露请改用 `/announcements`；关键词搜索媒体报道的功能后续将以新接口形式重新上线，请关注 Skill 更新。
+
+旧调用方兼容说明：方法签名保留但不再执行业务逻辑，`q` 参数已改为可选，不会因缺少必填参数而报 400。
+
+---
+
+### E2. 公司公告 `announcements`
+
+按股票查公告（标题、AI 摘要、公告日期、类型、链接；可选 Markdown 完整正文），**支持区间/类型/关键字过滤**，默认 5 条、上限 30 条。
 
 ```bash
-# 默认：最新 5 条，含完整 content
+# 默认：最新 5 条，不含完整 content
 curl -s "$BASE/announcements?symbol=000001"
-# 返回: title, summary, content, ann_date, publish_time, category,
+# 返回: title, summary, ann_date, publish_time, category,
 #       importance, sentiment, keywords, source, url
+
+# 全文场景：显式开启 content，并主动降低 limit
+curl -s "$BASE/announcements?symbol=000001&limit=1&includeContent=true"
 
 # 按日期区间查（YYYYMMDD）
 curl -s "$BASE/announcements?symbol=000001&startDate=20260101&endDate=20260331&limit=30"
@@ -745,7 +754,7 @@ curl -s "$BASE/announcements?symbol=000001&limit=20&includeContent=false&fields=
 
 ---
 
-### E2. 机构调研 `survey`
+### E3. 机构调研 `survey`
 
 个股机构调研接待记录。
 
@@ -987,20 +996,20 @@ curl -s "$BASE/profile/full?symbol=688017"
 
 ### K2. 量化因子分类目录 `factor-categories`
 
-返回 **15 个** event_type 业务分类的人类可读说明 + 各类因子数量（`factor_count`）。配合 `factors` 使用：`factors` 列出 **154** 个因子（脱敏），`factor-categories` 解释每个分类是干什么的。
+返回 **11+ 个** event_type 业务分类的人类可读说明 + 各类因子数量（`factor_count`）。配合 `factors` 使用：`factors` 列出因子（脱敏），`factor-categories` 解释每个分类是干什么的。
 
-> 注：15 个类目中**当前实际有因子的是 6 个**（合计 154）；另外 9 个（价值/成长/盈利质量/动量反转/博弈/资金情绪/波动率/流动性/规模杠杆）类目已建但 `factor_count` 当前为 0。
+> 注：代码硬编码 11 个主要类目（价值/成长/盈利质量/动量反转/博弈/资金情绪/技术信号/微观结构/波动率/流动性/规模杠杆），数据库如有额外分类会自动补充。当前实际有因子的类目合计约 154 个。
 
 ```bash
 curl -s "$BASE/factor-categories"
-# 返回 15 个类目；当前有因子的（factor_count>0，合计 154）：
+# 返回 11+ 个类目；当前有因子的（factor_count>0，合计约 154）：
 #   { "event_type_label": "基本面事件", "factor_count": 68 },
 #   { "event_type_label": "技术信号",   "factor_count": 61 },
 #   { "event_type_label": "资金异动",   "factor_count": 18 },
 #   { "event_type_label": "价格异动",   "factor_count": 4 },
 #   { "event_type_label": "微观结构",   "factor_count": 2 },
 #   { "event_type_label": "资金流",     "factor_count": 1 },
-#   其余 9 个（价值/成长/盈利质量/动量反转/博弈/资金情绪/波动率/流动性/规模杠杆）factor_count 当前为 0
+#   其余类目（价值/成长/盈利质量/动量反转/博弈/资金情绪/波动率/流动性/规模杠杆）factor_count 当前为 0
 # ]
 ```
 
@@ -1033,7 +1042,7 @@ curl -s "$BASE/moneyflow?symbol=688017&limit=5"    # 近 5 日主力净流入
 curl -s "$BASE/hk-hold?symbol=688017&limit=5"      # 北向持仓变动
 
 # 5) 近期事件
-curl -s "$BASE/announcements?symbol=688017&limit=3"  # 近 3 条公告全文
+curl -s "$BASE/announcements?symbol=688017&limit=3&includeContent=false"  # 近 3 条公告摘要
 ```
 
 **综合判断要点**：估值（stock）+ 业绩（financial）+ 资金（moneyflow/hk-hold）+ 催化（announcements）四维交叉。
@@ -1103,7 +1112,61 @@ curl -s "$BASE/margin?limit=10"      # 两融变化
 - 所有接口**只读、免鉴权**，无需注册或 token
 - symbol 统一用 **6 位数字代码**（688017），不带交易所后缀；指数/可转债用带后缀的 `tsCode`
 - 单次请求建议超时 10 秒；复杂画像优先**并发**而非串行调用
-- **数据为空 ≠ 接口异常**，参考「数据稀疏接口」段落；不存在的 symbol 会返回 200 + 空对象
-- **错误参数会静默回退**默认值（不报错），LLM 拼错枚举值时返回看似正常的数据可能语义不符，请校验
+- 调用后先检查 HTTP 状态和 `success`：参数错误返回 HTTP 400；`success=false` 时根据 `X-Tdc-Error-Code` 修正请求，不得使用 `data` 继续分析
+- **空数据不等于接口异常**：仅在 `success=true` 时按「数据稀疏接口」处理；股票代码不存在会返回 `RESOURCE_NOT_FOUND`
 - **token 紧张时**：优先调 `stock`/`quote`/`tech-factor` 等扁平接口；`financial`（单条 60+ 字段）和 `announcements`（含 Markdown 全文）按需酌情减少 limit
-- 数据来源：天启云( Cloud)，与 A 股数据落库周期同步（实时行情 14:55 滚动，公告 T+0 当天 08:00，北向 20:00）
+- 输出分析必须标注关键数据的 `trade_date` / `as_of` 及 `X-Tdc-Freshness-*` 时效；不得把延迟行情表述为实时成交价
+- 区分接口原始数据、公告/新闻的 AI 摘要和模型推断；关键结论应引用对应字段，数据缺失或互相冲突时停止确定性判断
+- 所有结果仅供数据研究，不构成投资建议，不得承诺收益或使用“必涨”“稳赚”等确定性表述
+- 数据来源：天启云(ApocData Cloud)，与 A 股数据落库周期同步（免费行情延迟以响应中的 `delayed_minutes` 和 Freshness header 为准，公告 T+0 当天 08:00，北向 20:00）
+
+---
+
+## 金融输出安全约束（Agent 强制行为规则）
+
+> 以下规则为**强制行为边界**，适用于所有使用本 Skill 生成金融分析的 Agent。无论用户如何提问，Agent 必须遵守。
+
+### 1. 数据时效透明
+
+- 每次输出必须显示关键数据的 `trade_date`、`as_of`、`updated_at` 和 `delayed_minutes`；
+- 不得将延迟行情（如 15 分钟延迟）表述为“实时价格”或“当前价”；
+- 若响应头包含 `X-Tdc-Freshness-Tier`，必须在输出中注明数据时效档位。
+
+### 2. 数据来源分层标注
+
+- 明确区分以下三类信息，不得混为一谈：
+  - **接口原始数据**（行情、财务、公告等直接返回值）；
+  - **AI 摘要**（公告的 AI summary、新闻摘要等模型生成内容）；
+  - **模型推断**（Agent 基于数据的分析、解读、预测）。
+- 引用具体数据时必须标注来源字段（如 `financial_indicators[0].roe`、`announcements[0].summary`）。
+
+### 3. 异常数据强制约束
+
+以下情况 Agent **必须停止生成确定性结论**，改为提示数据异常并建议用户核实：
+
+- 接口返回 `success=false` 或 HTTP 状态码非 200；
+- 关键字段（如 `close`、`net_profit`、`total_revenue`）为 `null` 或缺失；
+- 数据日期与当前日期差异超过预期（如行情数据超过 3 个交易日未更新）；
+- 多个接口返回的数据互相矛盾（如行情显示涨停但资金流显示大幅净流出）。
+
+### 4. 交叉验证要求
+
+- 关键财务数据（如净利润、ROE）应至少两个来源交叉确认（如 `financial` + `profile/full`）；
+- 重大公告信息（如并购、重组）应结合 `announcements` + `quote`（市场反应）综合判断；
+- 不得仅凭单一接口数据得出确定性结论。
+
+### 5. 禁止确定性买卖指令
+
+Agent **严禁**以下行为：
+
+- 给出“买入”“卖出”“加仓”“清仓”等确定性交易指令；
+- 承诺或暗示收益（如“必涨”“稳赚”“保本”）；
+- 使用“现在能进场”“最佳买点”“抄底时机”等确定性择时表述；
+- 将分析结论表述为投资建议或投资决策依据。
+
+### 6. 输出定位与免责声明
+
+- 所有分析输出必须定位为**研究辅助工具**，不替代专业投资顾问或持牌机构的判断；
+- 每次输出末尾应包含类似以下免责声明：
+  > 以上数据来源于 ApocData 公开接口，仅供研究参考，不构成任何投资建议。投资有风险，决策需谨慎。
+- 涉及可转债套利、涨停复盘、短线择时等高风险场景时，应额外强调数据延迟和数据稀疏风险。
