@@ -50,7 +50,7 @@ The data service platform is the unified entry point for ApocData. It provides:
 - **Platform editions (with API key)** — Higher quotas, deeper history,
   lower latency, and richer data fields. See [Editions & Capabilities](#editions--capabilities).
 
-> The base URL used by this Skill: `https://data.tianqis.com/api/blade-dataplatform/open/data`
+> The base URL used by this Skill: `https://www.apocdata.com/api/blade-dataplatform/open/data`
 
 ---
 
@@ -92,7 +92,7 @@ effect automatically.
 All endpoints are HTTP GET. Call them directly with `curl`:
 
 ```bash
-BASE="https://data.tianqis.com/api/blade-dataplatform/open/data"
+BASE="https://www.apocdata.com/api/blade-dataplatform/open/data"
 
 # Single stock quote
 curl -s "$BASE/quote?symbol=000001"
@@ -219,7 +219,7 @@ see [`SKILL.md`](./SKILL.md).
 When asked *"Analyze the valuation of 688017"*, the agent will call in sequence:
 
 ```bash
-BASE="https://data.tianqis.com/api/blade-dataplatform/open/data"
+BASE="https://www.apocdata.com/api/blade-dataplatform/open/data"
 curl -s "$BASE/stock?symbol=688017"          # PE/PB/market cap
 curl -s "$BASE/quote?symbol=688017"          # current price
 curl -s "$BASE/financial?symbol=688017"      # ROE/net profit
