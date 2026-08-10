@@ -46,7 +46,7 @@ ApocData（天启至数）专注于为 AI Agent 提供 A 股市场数据服务�
 - **平台版本（带 API Key）** —— 提供更高配额、更深历史、更低延迟与更多数据维度，
   详见下方 [版本与能力](#版本与能力)。
 
-> 本 Skill 使用的开放接口 BASE 地址：`https://data.tianqis.com/api/blade-dataplatform/open/data`
+> 本 Skill 使用的开放接口 BASE 地址：`https://www.apocdata.com/api/blade-dataplatform/open/data`
 
 ---
 
@@ -87,7 +87,7 @@ curl -o ~/.claude/skills/apocdata/SKILL.md \
 所有接口均为 HTTP GET，用 `curl` 直接调用：
 
 ```bash
-BASE="https://data.tianqis.com/api/blade-dataplatform/open/data"
+BASE="https://www.apocdata.com/api/blade-dataplatform/open/data"
 
 # 查单只股票行情
 curl -s "$BASE/quote?symbol=000001"
@@ -213,7 +213,7 @@ curl -s "$BASE/stock?symbol=000001"
 问「帮我分析一下 688017 的估值」时，Agent 会依次调用：
 
 ```bash
-BASE="https://data.tianqis.com/api/blade-dataplatform/open/data"
+BASE="https://www.apocdata.com/api/blade-dataplatform/open/data"
 curl -s "$BASE/stock?symbol=688017"          # PE/PB/市值
 curl -s "$BASE/quote?symbol=688017"          # 当前股价
 curl -s "$BASE/financial?symbol=688017"      # ROE/净利润
