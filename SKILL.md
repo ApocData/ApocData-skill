@@ -26,7 +26,7 @@ curl -L --fail -o ~/.claude/skills/apocdata/SKILL.md \
 所有接口均为 HTTP GET，用 curl 直接调用：
 
 ```bash
-BASE="https://data.tianqis.com/api/blade-dataplatform/open/data"
+BASE="https://www.apocdata.com/api/blade-dataplatform/open/data"
 
 # 查单只股票行情
 curl -s "$BASE/quote?symbol=000001"
@@ -41,7 +41,7 @@ curl -s "$BASE/stock?symbol=000001"
 
 | 端点 | 用途 |
 |---|---|
-| `https://data.tianqis.com/api/blade-dataplatform/open/data/openapi.json` | **OpenAPI 3 JSON（推荐，导入即用）**，免鉴权匿名访问，覆盖全部公开接口 |
+| `https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json` | **OpenAPI 3 JSON（推荐，导入即用）**，免鉴权匿名访问，覆盖全部公开接口 |
 
 > spec 的 `servers.url` 已内置为公网基址，导入后各接口路径直接拼接即可调用，无需再改 base。
 > 注：Knife4j 默认页 `doc.html` 与 springdoc 默认 `/v3/api-docs` 在公网域名下被前端 SPA 路由占用、不对外；对接一律以上面的 `openapi.json` 为准。
@@ -1024,7 +1024,7 @@ curl -s "$BASE/factor-categories"
 ### 场景 1：个股综合画像（「帮我看下 688017 怎么样」）
 
 ```bash
-BASE="https://data.tianqis.com/api/blade-dataplatform/open/data"
+BASE="https://www.apocdata.com/api/blade-dataplatform/open/data"
 
 # 1) 基本面 + 估值
 curl -s "$BASE/stock?symbol=688017"            # PE/PB/市值/行业
