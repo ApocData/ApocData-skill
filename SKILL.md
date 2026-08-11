@@ -274,7 +274,15 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 curl -s "$BASE/quote?symbol=688017"
 # 返回: symbol, name, trade_date, open, high, low, close,
 #       pre_close, change, pct_chg, volume, amount
+# 延迟信息: delayed_minutes, as_of
 ```
+
+**参数**：`symbol` — 6 位代码（不带交易所后缀，如 `600519`、`000001`）
+
+**字段语义**：
+- `open/high/low/close` — FREE/PRO 套餐为 15 分钟延迟快照，QUANT/ENT 为实时
+- `volume/amount` — **当日累计**成交量/成交额（所有套餐语义一致）
+- `delayed_minutes` / `as_of` — 数据延迟分钟数和时间戳，Agent 应据此标注时效
 
 **示例问题**：「688017 今天涨了多少？」「茅台现在什么价格？」
 
@@ -282,7 +290,7 @@ curl -s "$BASE/quote?symbol=688017"
 
 ### A2. 批量行情 `quotes`
 
-最多同时查 10 只股票。
+最多同时查 10 只股票，字段语义与 `quote` 一致（volume/amount 为当日累计）。
 
 ```bash
 curl -s "$BASE/quotes?symbols=000001,600519,000858"
@@ -863,7 +871,7 @@ curl -s "$BASE/cb-price-chg?tsCode=127026.SZ&limit=10"
 
 ### H1. 量化因子注册表 `factors`
 
-平台全部已启用的量化因子**元数据清单**（154 个，脱敏，不含计算公式/权重/打分）。
+平台全部已启用的量化因子**元数据清单**（脱敏，不含计算公式/权重/打分，数量以接口实时返回为准）。
 
 > ⚠️ 本接口返回的是**平台因子注册表**（因子名称、分类、是否启用），**不含个股因子值**，也不接受 `symbol` 参数。  
 > 要查某股票的 MACD/KDJ/RSI 等技术指标实际值，请用 `/tech-factor`。
@@ -977,7 +985,7 @@ curl -s "$BASE/profile/full?symbol=688017"
 #   "basic":               { symbol, name, industry, market, ... },
 #   "quote":               { close, pct_chg, volume, ... },
 #   "financial_trend":     [ {report_period, roe, revenue, ...}, ... ]  // 4 期
-#   "technical":           { macd, kdj_k, rsi6, ma_5, ma_20, ... },
+#   "technical":           { macd_qfq, macd_dif_qfq, macd_dea_qfq, kdj_k_qfq, kdj_d_qfq, rsi_qfq_6, boll_upper_qfq, ma_qfq_5, ma_qfq_20, ... },
 #   "chip_distribution":   { cost_50pct, weight_avg, winner_rate, ... },
 #   "money_flow_5d":       [ {trade_date, net_mf_amount, ...}, ... ]   // 5 日
 #   "north_capital":       [ {trade_date, ratio, vol, ...}, ... ]      // 5 日
@@ -996,13 +1004,13 @@ curl -s "$BASE/profile/full?symbol=688017"
 
 ### K2. 量化因子分类目录 `factor-categories`
 
-返回 **11+ 个** event_type 业务分类的人类可读说明 + 各类因子数量（`factor_count`）。配合 `factors` 使用：`factors` 列出因子（脱敏），`factor-categories` 解释每个分类是干什么的。
+返回所有 event_type 业务分类的人类可读说明 + 各类因子数量（`factor_count`）。配合 `factors` 使用：`factors` 列出因子（脱敏），`factor-categories` 解释每个分类是干什么的。
 
-> 注：代码硬编码 11 个主要类目（价值/成长/盈利质量/动量反转/博弈/资金情绪/技术信号/微观结构/波动率/流动性/规模杠杆），数据库如有额外分类会自动补充。当前实际有因子的类目合计约 154 个。
+> 注：主要类目包括价值/成长/盈利质量/动量反转/博弈/资金情绪/技术信号/微观结构/波动率/流动性/规模杠杆等，数据库如有额外分类会自动补充。具体数量和分类以接口实时返回为准。
 
 ```bash
 curl -s "$BASE/factor-categories"
-# 返回 11+ 个类目；当前有因子的（factor_count>0，合计约 154）：
+# 返回所有类目；有因子的（factor_count>0）：
 #   { "event_type_label": "基本面事件", "factor_count": 68 },
 #   { "event_type_label": "技术信号",   "factor_count": 61 },
 #   { "event_type_label": "资金异动",   "factor_count": 18 },
