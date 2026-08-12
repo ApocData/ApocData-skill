@@ -1,6 +1,6 @@
 # ApocData · A-Share AI Data Skill
 
-> Zero-auth, zero-dependency. Use `curl` to call 46 active A-share data endpoints
+> Zero-auth, zero-dependency. Use `curl` to call 45+ A-share data endpoints
 > (quotes / financials / fund flows / factors / announcements / macro).
 > Compatible with Claude, ChatGPT, Qwen, Kimi, DeepSeek and any AI agent
 > that supports tool calling.
@@ -9,11 +9,6 @@ The [`SKILL.md`](./SKILL.md) in this repository is a capability card that can
 be loaded directly into AI agents, letting LLMs query A-share market data
 and complete research tasks without any SDK.
 
-<p align="center">
-  <b>English</b> |
-  <a href="./README.zh-CN.md">简体中文</a>
-</p>
-
 ---
 
 ## Table of Contents
@@ -21,9 +16,9 @@ and complete research tasks without any SDK.
 - [Overview](#overview)
 - [Data Service Platform](#data-service-platform)
 - [Installation](#installation)
+- [Project Structure](#project-structure)
 - [Basic Usage](#basic-usage)
 - [Endpoint Overview](#endpoint-overview)
-- [Combined Analysis Example](#combined-analysis-example)
 - [Editions & Capabilities](#editions--capabilities)
 - [Notes & Compliance](#notes--compliance)
 
@@ -56,175 +51,102 @@ The data service platform is the unified entry point for ApocData. It provides:
 
 ## Installation
 
-### macOS / Linux
-
-```bash
-# Pinned to v1.1.0 — check https://github.com/ApocData/ApocData-skill/releases for latest
-mkdir -p ~/.claude/skills/apocdata
-curl -o ~/.claude/skills/apocdata/SKILL.md \
-  https://raw.githubusercontent.com/ApocData/ApocData-skill/v1.1.0/SKILL.md
-```
-
-### Windows (PowerShell)
-
-```powershell
-New-Item -ItemType Directory -Force -Path ~\.claude\skills\apocdata
-Invoke-WebRequest `
-  -Uri https://raw.githubusercontent.com/ApocData/ApocData-skill/v1.1.0/SKILL.md `
-  -OutFile ~\.claude\skills\apocdata\SKILL.md
-```
-
-### China users (Gitee mirror)
+### Quick Install (recommended)
 
 ```bash
 mkdir -p ~/.claude/skills/apocdata
-curl -o ~/.claude/skills/apocdata/SKILL.md \
-  https://gitee.com/apocdata/ApocData-skill/raw/v1.1.0/SKILL.md
+curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.0.tar.gz \
+  | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
-Restart Claude Code or Claude Desktop after installation. The Skill takes
-effect automatically.
+Restart Claude Code and the skill will be auto-detected.
+
+### Alternative: install script
+
+```bash
+curl -sL https://raw.githubusercontent.com/ApocData/ApocData-skill/v2.0.0/scripts/install.sh | bash
+```
+
+---
+
+## Project Structure
+
+This Skill uses a **multi-file structure** for progressive loading — the entry
+`SKILL.md` is a slim router (~180 lines), and detailed endpoint specs are
+loaded on demand from the `references/` directory:
+
+```
+├── SKILL.md                  # Entry point (slim router, ~180 lines)
+├── README.md                 # This file (human-facing docs)
+├── CHANGELOG.md              # Version history
+├── references/               # On-demand reference docs (loaded per topic)
+│   ├── boundaries.md         # Interface boundaries, headers, error codes, cache, freshness
+│   ├── group-a-quote.md      # A. Quotes & Valuation (10 endpoints)
+│   ├── group-b-financial.md  # B. Financials & Fundamentals (8 endpoints)
+│   ├── group-c-capital.md    # C. Capital Flow (7 endpoints)
+│   ├── group-d-limitup.md    # D. Limit-up & Sentiment (4 endpoints)
+│   ├── group-e-events.md     # E. Events & Information (3 endpoints)
+│   ├── group-f-sector.md     # F. Sectors & Concepts (4 endpoints)
+│   ├── group-g-convertible.md# G. Convertible Bonds (2 endpoints)
+│   ├── group-h-quant.md      # H. Quant & Technical (2 endpoints)
+│   ├── group-i-macro.md      # I. Macro (3 endpoints)
+│   ├── group-j-tools.md      # J. Tools (1 endpoint)
+│   ├── group-k-agent.md      # K. Agent Enhanced (2 endpoints)
+│   ├── examples.md           # Multi-endpoint analysis examples (5 scenarios)
+│   └── safety-rules.md       # Financial output safety constraints (6 rules)
+└── scripts/
+    └── install.sh            # One-line install script
+```
+
+**Why multi-file?** A simple query like "what's the price of Moutai" only needs
+the entry SKILL.md + one reference file (~4K tokens), instead of loading the
+entire 47KB monolith (~15K tokens). This reduces token consumption by 70%+.
 
 ---
 
 ## Basic Usage
 
-All endpoints are HTTP GET. Call them directly with `curl`:
+All endpoints are HTTP GET, called with `curl`:
 
 ```bash
 BASE="https://www.apocdata.com/api/blade-dataplatform/open/data"
 
-# Single stock quote
+# Get real-time quote
 curl -s "$BASE/quote?symbol=000001"
 
-# Stock basic info (incl. PE/PB/market cap)
+# Get stock info (PE/PB/market cap)
 curl -s "$BASE/stock?symbol=000001"
+
+# Get comprehensive profile (8 dimensions in one call)
+curl -s "$BASE/profile/full?symbol=688017"
 ```
 
-Full parameters, return fields, and example questions for each endpoint:
-see [`SKILL.md`](./SKILL.md).
+### OpenAPI 3 Integration
+
+Import `openapi.json` into GPT Actions / Coze / Dify / n8n / Zapier:
+
+```
+https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json
+```
 
 ---
 
 ## Endpoint Overview
 
-46 active endpoints in total, grouped by data dimension (`/news` deprecated, not counted):
-
-### Real-time Quotes & K-line (7)
-
-| Endpoint      | Description                                |
-| ------------- | ------------------------------------------ |
-| `quote`       | Latest change/volume/price for one stock   |
-| `quotes`      | Batch quotes, up to 10 stocks              |
-| `daily`       | Daily K history, ≤ 30 records              |
-| `ranking`     | Market-wide gain/loss rankings             |
-| `index-daily` | Index daily K                              |
-| `hk-daily`    | Hong Kong daily K                          |
-| `tech-factor` | Technical factors (MACD/KDJ/RSI/BOLL/MA)   |
-
-### Fundamentals & Financials (5)
-
-| Endpoint    | Description                              |
-| ----------- | ---------------------------------------- |
-| `stock`     | Stock basics (industry / cap / PE / PB)  |
-| `financial` | Financials (ROE / revenue / net profit), ≤ 4 periods |
-| `express`   | Earnings express reports                 |
-| `dividend`  | Dividend and share allotment plans       |
-| `cyq-perf`  | Chip distribution and profit ratio       |
-
-### Shareholders & Governance (6)
-
-| Endpoint        | Description                          |
-| --------------- | ------------------------------------ |
-| `holders`       | Top 10 shareholders / circulating    |
-| `holder-number` | Historical shareholder count         |
-| `share-float`   | Lock-up release records              |
-| `repurchase`    | Share buyback plans and progress     |
-| `block-trade`   | Block trade records                  |
-| `survey`        | Institutional research visits        |
-
-### Fund Flows (5)
-
-| Endpoint      | Description                              |
-| ------------- | ---------------------------------------- |
-| `moneyflow`   | Stock fund flow and main net inflow      |
-| `hsgt`        | HSGT (North/South bound) fund flow       |
-| `sector-flow` | Sector / concept / regional fund flow    |
-| `hk-hold`     | Stock holdings via HSGT                  |
-| `margin`      | Margin trading and short selling summary |
-
-### Dragon-Tiger & Sentiment (6)
-
-| Endpoint           | Description                       |
-| ------------------ | --------------------------------- |
-| `dragon-tiger`     | Dragon-tiger list / stock history |
-| `limit-list`       | Limit up / down / broken pools    |
-| `limit-step`       | Consecutive limit-up ladder       |
-| `hot-rank`         | EastMoney popularity ranking      |
-| `hot-money`        | Famous hot-money directory        |
-| `hot-money-detail` | Hot-money trade details           |
-
-### Sectors & Concepts (4)
-
-| Endpoint           | Description                  |
-| ------------------ | ---------------------------- |
-| `concepts`         | EastMoney concept directory  |
-| `concept-stocks`   | Concept constituent stocks   |
-| `ths-boards`       | THS industry / concept boards |
-| `ths-board-stocks` | THS board constituents       |
-
-### News & Announcements (1 active, 1 deprecated)
-
-| Endpoint        | Description                              |
-| --------------- | ---------------------------------------- |
-| ~~`news`~~      | **Deprecated** — returns HTTP 410 + migration hint. Use `/announcements` instead. |
-| `announcements` | Company announcements (AI summary + markdown) |
-
-### Macro Economics (3)
-
-| Endpoint           | Description                          |
-| ------------------ | ------------------------------------ |
-| `macro`            | Macro indicator history (GDP/CPI/PPI/PMI) |
-| `macro/latest`     | Latest macro indicator values        |
-| `macro/definition` | Macro indicator definitions          |
-
-### Search & Utilities (5)
-
-| Endpoint    | Description                            |
-| ----------- | -------------------------------------- |
-| `stocks`    | Search stocks by name / code           |
-| `indexes`   | Search indexes by name / code          |
-| `calendar`  | A-share trading calendar               |
-| `st`        | ST / delisting risk status             |
-| `factors`   | Quant factor registry (sanitized)      |
-
-### Convertible Bonds (2)
-
-| Endpoint            | Description                       |
-| ------------------- | --------------------------------- |
-| `convertible-bonds` | Convertible bond basic info       |
-| `cb-price-chg`      | Conversion price change records   |
-
-### Agent Enhancements (2)
-
-| Endpoint            | Description                                  |
-| ------------------- | -------------------------------------------- |
-| `profile/full`      | Aggregated 8-dimension stock profile         |
-| `factor-categories` | Quant factor business categories and counts |
-
----
-
-## Combined Analysis Example
-
-When asked *"Analyze the valuation of 688017"*, the agent will call in sequence:
-
-```bash
-BASE="https://www.apocdata.com/api/blade-dataplatform/open/data"
-curl -s "$BASE/stock?symbol=688017"          # PE/PB/market cap
-curl -s "$BASE/quote?symbol=688017"          # current price
-curl -s "$BASE/financial?symbol=688017"      # ROE/net profit
-curl -s "$BASE/daily?symbol=688017&limit=30" # recent trend
-```
+| Group | Topic | Endpoints |
+|-------|-------|-----------|
+| A | Quotes & Valuation | 10 |
+| B | Financials & Fundamentals | 8 |
+| C | Capital Flow | 7 |
+| D | Limit-up & Sentiment | 4 |
+| E | Events & Information | 3 (2 active) |
+| F | Sectors & Concepts | 4 |
+| G | Convertible Bonds | 2 |
+| H | Quant & Technical | 2 |
+| I | Macro | 3 |
+| J | Tools | 1 |
+| K | Agent Enhanced | 2 |
+| **Total** | | **45 active** |
 
 ---
 
@@ -257,43 +179,36 @@ Upgrade to a platform edition with API key for higher quotas and deeper data.**
 | Availability SLO   | best-effort | 99.0%          | 99.5%   | 99.9% (contract) |
 | Support            | Community   | Email 48h      | Email 24h | Dedicated channel + phone |
 
-> All editions include OpenAPI docs, SDKs, status page, and usage dashboard.
-> Full capability matrix and pricing details available upon request.
+---
 
-### Add-ons (stackable on existing editions)
+## Endpoint Verification
 
-| Add-on         | Name              | Description                          |
-| -------------- | ----------------- | ------------------------------------ |
-| ADD-HIST-10Y   | History extension | Daily K from 30 days to 10 years     |
-| ADD-FACTOR-50  | Factor extension  | Pro factors: 20 → 70                 |
-| ADD-MCP-PRO    | Agent pack        | Unlock all 18 MCP tools              |
-| ADD-BULK       | Usage-based       | Overflow billing, no upgrade needed  |
-| ADD-ENT-SLA    | Enterprise SLA    | 99.9% · dedicated bandwidth          |
-| ADD-WHITELABEL | White-label       | Custom domain + docs                 |
+> **Last verified:** 2026-08-12 12:21 CST
 
-> Pricing, upgrades, and business inquiries: **<drawsea@163.com>**
+| Check | Result |
+|---|---|
+| Core endpoints tested | 12/12 -> HTTP 200
+| Total active endpoints | 45 (across 11 groups) |
+| Avg latency | ~217ms
+| Deprecated | `/news` (HTTP 410, documented in group-e) |
+
+Verified endpoints: `quote`, `stock`, `daily`, `financial`, `moneyflow`, `hsgt`,
+`limit-list`, `announcements`, `concepts`, `macro/latest`, `calendar`, `profile/full`.
+Full 45-endpoint coverage is validated via the scenario quick-reference table in `SKILL.md`.
 
 ---
 
 ## Notes & Compliance
 
-**Usage conventions**
-
-- All endpoints are **read-only and authentication-free**. No registration
-  or token required.
-- `symbol` uses a **6-digit numeric code** (e.g., `688017`), no exchange suffix.
-- Recommended request timeout: 10 seconds.
-- Data source: ApocData, synchronized with A-share data ingestion cycles.
-
-**Compliance**
-
-- Quote data is delayed (not exchange-licensed real-time data).
-- Derived data is cleaned and structured; redistribution is prohibited.
-- News contains only titles and links; full content copyright belongs to the
-  original publishers.
-- Factors and signals are for research purposes only and **do not constitute
-  any investment advice**.
+- All endpoints are **read-only, no auth required**
+- Data source: ApocData Cloud (天启云), synced with A-share market data
+- Free tier quotes have 15-minute delay (see `delayed_minutes` in response)
+- Announcements: T+0 at 08:00; Northbound capital: 20:00
+- This Skill is for **research assistance only** — not investment advice
+- Financial output safety constraints are enforced via `references/safety-rules.md`
 
 ---
 
-Contact: <drawsea@163.com>
+## License
+
+See [LICENSE](./LICENSE) for details.
