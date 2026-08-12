@@ -191,8 +191,8 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 
 | 接口类别 | max-age | 包含接口 |
 |---|---|---|
-| **盘中实时** | `5s` | `quote` / `quotes` / `ranking` / `hot-rank` / `sector-flow` / `moneyflow` / `limit-list` / `limit-step` / `dragon-tiger` / `hot-money-detail` |
-| **盘后日更** | `5min`（300s） | `daily` / `index-daily` / `hsgt` / `hk-hold` / `margin` / `cyq-perf` / `tech-factor` / `financial` / `express` / `dividend` / `share-float` / `repurchase` / `holder-number` / `block-trade` / `news` / `announcements` / `survey` / `holders` |
+| **盘中实时** | `5s` | `quote` / `quotes` / `ranking` / `hot-rank` / `sector-flow` / `limit-list` / `limit-step` / `dragon-tiger` / `hot-money-detail` |
+| **盘后日更** | `5min`（300s） | `daily` / `index-daily` / `hsgt` / `hk-hold` / `margin` / `moneyflow` / `cyq-perf` / `tech-factor` / `financial` / `express` / `dividend` / `share-float` / `repurchase` / `holder-number` / `block-trade` / `news` / `announcements` / `survey` / `holders` |
 | **元数据/低频** | `1h`（3600s） | `stock` / `stocks` / `st` / `indexes` / `factors` / `factor-categories` / `concepts*` / `ths-boards*` / `convertible-bonds` / `cb-price-chg` / `hot-money` / `calendar` / `macro*` |
 | **综合画像** | `30s` | `profile/full`（取所有子接口最严约束） |
 | **错误响应** | `no-store` | 所有 `success=false`（防止错误结果被中间层固化） |
@@ -205,8 +205,8 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 
 | Tier | 含义 | 涉及接口 |
 |---|---|---|
-| `intraday` | 盘中实时（FREE 套餐 15min 延迟） | `quote` / `quotes` / `ranking` / `hot-rank` / `sector-flow` / `moneyflow` |
-| `post-close` | 盘后批量更新 | 16:30：`limit-list` / `limit-step` / `dragon-tiger` / `hot-money-detail` / `cyq-perf`；17:00-18:00：`daily` / `index-daily` / `tech-factor` / `margin` / `block-trade`；20:00：`hsgt` / `hk-hold` |
+| `intraday` | 盘中实时（FREE 套餐 15min 延迟） | `quote` / `quotes` / `ranking` / `hot-rank` / `sector-flow` |
+| `post-close` | 盘后批量更新 | 16:30：`limit-list` / `limit-step` / `dragon-tiger` / `hot-money-detail` / `cyq-perf`；17:00-18:00：`daily` / `index-daily` / `tech-factor` / `margin` / `moneyflow` / `block-trade`；20:00：`hsgt` / `hk-hold` |
 | `t0-morning` | 当天 T+0 早上 08:00 入库 | `news` / `announcements` / `survey` |
 | `quarterly` | 季报披露窗口（报告期后约 1 个月） | `financial` / `express` / `dividend` / `share-float` / `repurchase` / `holder-number` / `holders` |
 | `metadata` | 元数据/字典低频更新 | `stock` / `stocks` / `st` / `indexes` / `factors` / `factor-categories` / `concepts*` / `ths-boards*` / `convertible-bonds` / `cb-price-chg` / `hot-money` / `calendar` / `macro*` |
