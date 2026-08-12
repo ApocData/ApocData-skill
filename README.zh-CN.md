@@ -113,7 +113,6 @@ curl -s "$BASE/stock?symbol=000001"
 | `daily`       | 日 K 历史，最近 N 条或日期区间，≤ 30 条 |
 | `ranking`     | 全市场涨跌幅排行榜（涨幅 / 跌幅）        |
 | `index-daily` | 指数日 K 行情                         |
-| `hk-daily`    | 港股日 K 行情                         |
 | `tech-factor` | 技术面因子（MACD / KDJ / RSI / BOLL / 均线） |
 
 ### 基本面与财务（5）
