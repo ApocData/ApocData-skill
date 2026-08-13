@@ -212,6 +212,10 @@ curl -s "$BASE/ranking?limit=3&format=compact"
 | `metadata` | 元数据/字典低频更新 | `stock` / `stocks` / `st` / `indexes` / `factors` / `factor-categories` / `concepts*` / `ths-boards*` / `convertible-bonds` / `cb-price-chg` / `hot-money` / `calendar` / `macro*` |
 | `aggregated` | 聚合接口（取最严约束） | `profile/full` |
 
+> `profile/full` 的 `aggregated` tier 表示其内部聚合了多个子接口，各子接口时效不同：
+> quote/ranking 维度为 `intraday`，moneyflow/daily 维度为 `post-close`，financial 维度为 `quarterly`，stock 维度为 `metadata`。
+> 调用方应逐维度检查 `trade_date` 判断各部分数据时效，不要以整体 `Freshness-Tier: aggregated` 为准。
+
 **Agent 典型用法**：
 - 看到 `Freshness-Tier=intraday` 且当前已收盘 → 数据是 14:55 快照
 - 看到 `post-close` 且当前 19:00 → 数据应是当日 17:00 的

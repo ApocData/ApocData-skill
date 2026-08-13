@@ -9,6 +9,7 @@
 ```bash
 curl -s "$BASE/limit-list?kind=U&date=20260518&limit=30"
 # kind=U 涨停 / D 跌停 / Z 炸板，date 缺省取最新交易日
+# 注: date 传非交易日（周末/节假日）时，不会自动回退到前一交易日，而是返回空数组
 # 返回: trade_date, ts_code, name, industry, close, pct_chg, amount,
 #       first_time, last_time, open_times, up_stat, limit_times, limit
 ```

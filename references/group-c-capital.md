@@ -10,6 +10,8 @@
 curl -s "$BASE/moneyflow?symbol=000001&limit=10"
 # 返回: trade_date, buy_elg_amount, sell_elg_amount, buy_lg_amount, sell_lg_amount,
 #       buy_md_amount, sell_md_amount, buy_sm_amount, sell_sm_amount, net_mf_amount
+# 注: net_mf_amount = 超大单+大单+中单+小单的净买入额之和（即四类资金净流口的代数和）
+#     各分项 buy_xxx_amount - sell_xxx_amount = 该档净流入；net_mf_amount 为四项之和
 ```
 
 **示例问题**：「平安银行最近主力是流入还是流出？」
@@ -32,6 +34,8 @@ curl -s "$BASE/hsgt?limit=10"
 ## C3. 沪深港通持股 `hk-hold`
 
 个股被沪深港通（北向）持股记录。
+
+> **数据频率**：hk-hold 为**季度数据**（每季度末更新一次），非每日更新。返回的 trade_date 为季末日期（如 20260630、20260331）。
 
 ```bash
 curl -s "$BASE/hk-hold?symbol=000001&limit=10"
