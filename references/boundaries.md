@@ -46,8 +46,8 @@
 | `X-RateLimit-Remaining` | 每次请求 | 当日剩余额度 |
 | `X-RateLimit-Reset` | 每次请求 | 额度重置时间（Unix 时间戳，本地次日 0 点） |
 | `X-RateLimit-Tier` | 每次请求 | 当前套餐（`free`） |
-| `X-Tdc-Limit-Applied` | 每次请求 | 实际生效的 limit 值 |
-| `X-Tdc-Limit-Max` | 每次请求 | 该接口的 limit 硬上限 |
+| `X-Tdc-Limit-Applied` | 列表类接口 | 实际生效的 limit 值 |
+| `X-Tdc-Limit-Max` | 列表类接口 | 该接口的 limit 硬上限 |
 | `X-Tdc-Limit-Truncated` | **仅当用户传值超过上限** | `true` — 表示请求被静默截断（参考上方上限速查） |
 | `X-Tdc-Limit-Requested` | 仅当截断时 | 用户原始传入的 limit 值 |
 | `X-Tdc-Coverage` | **仅当返回空数组时** | `sparse` — 表示该接口数据本身就稀疏，空 != 异常 |
