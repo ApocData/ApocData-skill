@@ -54,6 +54,7 @@ curl -s "$BASE/stock?symbol=000001"
 |---|---|---|
 | 个股综合画像 / 「这只票怎么样」 | **推荐**：`profile/full?symbol=X`（一次返回 8 维数据） | 等价于并发调 8 个单接口，延时减 60%+ |
 | 个股综合画像（分步精细化） | `quote` → `stock` → `financial` → `tech-factor` → `moneyflow` → `announcements` | 需要按维度独立控制 limit/fields 时用 |
+| **多只股票行情对比 / 批量查涨跌** | **`quotes?symbols=A,B,C`**（**3 只以上必须用，禁止逐只轮询**） | 最多 10 只，一次返回，省 3 倍请求 |
 | 估值评估 / 「贵不贵」 | `stock` → `financial` → `daily?limit=30` | 看 PE/PB/PEG，结合近期走势判断 |
 | 资金动向追踪 / 「主力在干嘛」 | `moneyflow` → `hsgt` → `hk-hold` → `dragon-tiger` → `hot-money-detail` | 北向 20:00 后更新 |
 | 涨停盘后复盘 / 「今天涨停的共性」 | `limit-list?kind=U` → `limit-step` → `sector-flow` → `hot-money-detail` | date 不传默认最新交易日 |
@@ -164,6 +165,7 @@ curl -s "$BASE/stock?symbol=000001"
 - 单次请求超时建议 10 秒；复杂画像优先**并发**调用
 - **空数据 ≠ 接口异常**：`success=true` + 空数组是数据稀疏，不是报错
 - **token 紧张时**：用 `?fields=` 裁剪 + `?format=compact` 紧凑模式，可省 60-90% token
+- **小模型（<15B）**：用 `references/SKILL-compact.md`（~3KB 精简版）代替全文注入，避免关键信息被淹没
 - 输出分析必须标注数据时效（`trade_date` / `delayed_minutes` / Freshness header）
 - 数据来源：天启云(ApocData Cloud)，公告 T+0 08:00，北向 20:00
 

@@ -76,6 +76,18 @@
 
 > 参数错误响应是 `{"code":400,"success":false,"msg":"..."}` 的 R 包装结构，HTTP 状态码为 400。资源不存在默认保持兼容响应，可通过服务端开关升级为 HTTP 404。结构化错误信息同时写入 header。
 
+**`RESOURCE_NOT_FOUND` 响应示例**（Agent 必须识别此结构，不要当成功数据处理）：
+
+```json
+// HTTP 400, Header: X-Tdc-Error-Code: RESOURCE_NOT_FOUND
+{
+  "code": 400,
+  "success": false,
+  "msg": "未找到股票: 999999"
+}
+// 正确做法：先用 /stocks?q= 搜索确认正确代码，不要重试同一 symbol
+```
+
 ## 错误处理决策树（Agent 必执行）
 
 > 遇到任何非 `success=true` 的响应，按以下决策树处理。**不要忽略错误直接输出分析结论**。
