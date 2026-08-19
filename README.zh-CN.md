@@ -262,7 +262,7 @@ ApocData 按使用场景分为四档版本，所有版本共用同一套 API 契
 | ADD-ENT-SLA    | 企业 SLA   | 99.9% · 专属带宽            |
 | ADD-WHITELABEL | 白标 / 域名 | 自定义域名 + 文档           |
 
-> 价格、升级或商务咨询请联系：**<drawsea@163.com>**
+> 价格、升级或商务咨询请联系：**<yclszkj@163.com>**
 
 ---
 
@@ -284,4 +284,4 @@ ApocData 按使用场景分为四档版本，所有版本共用同一套 API 契
 
 ---
 
-联系方式：<drawsea@163.com>
+联系方式：<yclszkj@163.com>
