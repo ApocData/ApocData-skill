@@ -1,6 +1,6 @@
 # ApocData · 天启至数 · A 股数据 Skill
 
-> 免鉴权、零依赖，用 `curl` 直接调用 A 股行情 / 财务 / 资金 / 因子 / 公告等 46 个活跃数据接口，
+> 免鉴权、零依赖，用 `curl` 直接调用 A 股行情 / 财务 / 资金 / 因子 / 公告等 45 个活跃数据接口，
 > 支持 Claude、ChatGPT、通义千问、Kimi、DeepSeek 等所有支持工具调用的 AI Agent。
 
 本仓库提供的 [`SKILL.md`](./SKILL.md) 是一份可直接装入 AI Agent 的能力卡片，
@@ -10,6 +10,56 @@
   <a href="./README.md">English</a> |
   <b>简体中文</b>
 </p>
+
+
+<p align="center">
+  <img src="https://img.shields.io/badge/endpoints-45-green" alt="45 endpoints"/>
+  <img src="https://img.shields.io/badge/auth-none-brightgreen" alt="No auth required"/>
+  <img src="https://img.shields.io/badge/MCP-46_tools-blue" alt="MCP 46 tools"/>
+  <img src="https://img.shields.io/badge/license-Apache_2.0-blue" alt="License"/>
+</p>
+
+---
+
+## 10 秒体验
+
+复制粘贴即可运行，无需任何配置：
+
+```bash
+curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=600519"
+```
+
+<details>
+<summary>点击展开返回示例</summary>
+
+```json
+{
+  "code": 200, "success": true,
+  "data": {
+    "symbol": "600519", "name": "贵州茅台",
+    "close": 1528.00, "pct_chg": -0.52,
+    "volume": 2856321, "delayed_minutes": 15
+  }
+}
+```
+
+*实际返回字段更丰富，以上为简化示例。*
+</details>
+
+---
+
+## 为什么选 ApocData？
+
+| | **ApocData** | tushare | akshare | 同花顺 iFinD |
+|---|---|---|---|---|
+| 鉴权 | **无需** | 付费 Token | Python 环境 + akshare 安装 | 申请审批 |
+| 安装步骤 | **0** | 3+（注册→获取 token→配置） | 2+（pip install + 依赖） | 5+ |
+| MCP 支持 | **✅ 46 工具** | ❌ | ❌ | ❌ |
+| Skill 支持 | **✅ Claude / GPT / 通义** | ❌ | ❌ | ❌ |
+| 一行 curl 可用 | **✅** | ❌ | ❌ | ❌ |
+| 接口数 | 45 | 100+（老旧） | 50+ | 有限 |
+
+> *对比基于 2026-08 实测。tushare 免费档部分接口可用但需注册 token；akshare 需 Python 环境。*
 
 ---
 
@@ -55,30 +105,49 @@ ApocData（天启至数）专注于为 AI Agent 提供 A 股市场数据服务�
 ### macOS / Linux
 
 ```bash
-# 固定版本 v1.1.0，查看最新版本: https://github.com/ApocData/ApocData-skill/releases
+# v2.0.0 多文件结构，查看最新版本: https://github.com/ApocData/ApocData-skill/releases
 mkdir -p ~/.claude/skills/apocdata
-curl -o ~/.claude/skills/apocdata/SKILL.md \
-  https://raw.githubusercontent.com/ApocData/ApocData-skill/v1.1.0/SKILL.md
+curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.0.tar.gz \
+  | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
 ### Windows (PowerShell)
 
 ```powershell
 New-Item -ItemType Directory -Force -Path ~\.claude\skills\apocdata
-Invoke-WebRequest `
-  -Uri https://raw.githubusercontent.com/ApocData/ApocData-skill/v1.1.0/SKILL.md `
-  -OutFile ~\.claude\skills\apocdata\SKILL.md
+Invoke-WebRequest -Uri https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.0.tar.gz -OutFile ~\Downloads\apocdata.tar.gz
+tar xzf ~\Downloads\apocdata.tar.gz -C ~\.claude\skills\apocdata --strip-components=1
 ```
 
 ### 国内用户（Gitee 镜像）
 
 ```bash
 mkdir -p ~/.claude/skills/apocdata
-curl -o ~/.claude/skills/apocdata/SKILL.md \
-  https://gitee.com/apocdata/ApocData-skill/raw/v1.1.0/SKILL.md
+curl -sL https://gitee.com/apocdata/ApocData-skill/repository/archive/v2.0.0.tar.gz \
+  | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
-重启 Claude Code 或 Claude Desktop 后自动生效。
+
+### MCP 安装（Claude Desktop / Cursor / ChatGPT）
+
+```json
+{
+  "mcpServers": {
+    "apocdata": {
+      "command": "npx",
+      "args": ["-y", "@apocdata/mcp-server"]
+    }
+  }
+}
+```
+
+### OpenAPI 导入（GPT Actions / Dify / Coze / n8n）
+
+```
+https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json
+```
+
+导入即用，免鉴权。
 
 ---
 
@@ -102,9 +171,9 @@ curl -s "$BASE/stock?symbol=000001"
 
 ## 接口能力总览
 
-共 46 个活跃接口（`/news` 已下线，不计入），按数据维度分类如下：
+共 45 个活跃接口（`/news` 已下线，不计入），按数据维度分类如下：
 
-### 实时行情与 K 线（7）
+### 实时行情与 K 线（6）
 
 | 接口            | 说明                                  |
 | ------------- | ----------------------------------- |

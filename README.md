@@ -1,5 +1,16 @@
 # ApocData · A-Share AI Data Skill
 
+<p align="center">
+  <b>English</b> |
+  <a href="./README.zh-CN.md">简体中文</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/endpoints-45-green" alt="45 endpoints"/>
+  <img src="https://img.shields.io/badge/auth-none-brightgreen" alt="No auth required"/>
+  <img src="https://img.shields.io/badge/MCP-46_tools-blue" alt="MCP 46 tools"/>
+  <img src="https://img.shields.io/badge/license-Apache_2.0-blue" alt="License"/>
+</p>
 > Zero-auth, zero-dependency. Use `curl` to call 45+ A-share data endpoints
 > (quotes / financials / fund flows / factors / announcements / macro).
 > Compatible with Claude, ChatGPT, Qwen, Kimi, DeepSeek and any AI agent
@@ -8,6 +19,48 @@
 The [`SKILL.md`](./SKILL.md) in this repository is a capability card that can
 be loaded directly into AI agents, letting LLMs query A-share market data
 and complete research tasks without any SDK.
+
+---
+
+## Quick Try
+
+Copy-paste and run, no config needed:
+
+```bash
+curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=600519"
+```
+
+<details>
+<summary>Click to expand sample response</summary>
+
+```json
+{
+  "code": 200, "success": true,
+  "data": {
+    "symbol": "600519", "name": "Kweichow Moutai",
+    "close": 1528.00, "pct_chg": -0.52,
+    "volume": 2856321, "delayed_minutes": 15
+  }
+}
+```
+
+*Actual response has more fields; above is a simplified example.*
+</details>
+
+---
+
+## Why ApocData?
+
+| | **ApocData** | tushare | akshare | iFinD |
+|---|---|---|---|---|
+| Auth | **None** | Paid token | Python env + install | Application approval |
+| Setup steps | **0** | 3+ (register → token → config) | 2+ (pip + deps) | Manual review |
+| AI Agent native | **Skill + MCP** | Plugin (legacy) | Not supported | Not supported |
+| curl one-liner | **Direct** | Need SDK | Need SDK | Need SDK |
+| A-share endpoints | **45** | 100+ (paywalled) | 100+ (free) | 200+ (paid) |
+| MCP support | **46 tools** | None | None | None |
+
+*Comparison based on publicly available info as of 2026-08.*
 
 ---
 
@@ -61,6 +114,27 @@ curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.0.tar
 
 Restart Claude Code and the skill will be auto-detected.
 
+### MCP Install (Claude Desktop / Cursor / ChatGPT)
+
+```json
+{
+  "mcpServers": {
+    "apocdata": {
+      "command": "npx",
+      "args": ["-y", "@apocdata/mcp-server"]
+    }
+  }
+}
+```
+
+### OpenAPI Import (GPT Actions / Dify / Coze / n8n)
+
+```
+https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json
+```
+
+Import and use — no auth required.
+
 ### Alternative: install script
 
 ```bash
@@ -87,7 +161,7 @@ loaded on demand from the `references/` directory:
 │   ├── group-d-limitup.md    # D. Limit-up & Sentiment (4 endpoints)
 │   ├── group-e-events.md     # E. Events & Information (3 endpoints)
 │   ├── group-f-sector.md     # F. Sectors & Concepts (4 endpoints)
-│   ├── group-g-convertible.md# G. Convertible Bonds (2 endpoints)
+│   ├── group-g-convertible.md # G. Convertible Bonds (2 endpoints)
 │   ├── group-h-quant.md      # H. Quant & Technical (2 endpoints)
 │   ├── group-i-macro.md      # I. Macro (3 endpoints)
 │   ├── group-j-tools.md      # J. Tools (1 endpoint)
@@ -121,14 +195,6 @@ curl -s "$BASE/stock?symbol=000001"
 curl -s "$BASE/profile/full?symbol=688017"
 ```
 
-### OpenAPI 3 Integration
-
-Import `openapi.json` into GPT Actions / Coze / Dify / n8n / Zapier:
-
-```
-https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json
-```
-
 ---
 
 ## Endpoint Overview
@@ -139,14 +205,14 @@ https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json
 | B | Financials & Fundamentals | 8 |
 | C | Capital Flow | 7 |
 | D | Limit-up & Sentiment | 4 |
-| E | Events & Information | 3 (2 active) |
+| E | Events & Information | 2 (+ 1 deprecated) |
 | F | Sectors & Concepts | 4 |
 | G | Convertible Bonds | 2 |
 | H | Quant & Technical | 2 |
 | I | Macro | 3 |
 | J | Tools | 1 |
 | K | Agent Enhanced | 2 |
-| **Total** | | **45 active** |
+| **Total** | | **45 active** (+ 1 deprecated) |
 
 ---
 
