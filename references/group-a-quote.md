@@ -19,6 +19,7 @@ curl -s "$BASE/quote?symbol=688017"
 - `open/high/low/close` — FREE/PRO 套餐为 15 分钟延迟快照，QUANT/ENT 为实时
 - `volume/amount` — **当日累计**成交量/成交额（所有套餐语义一致）
 - `delayed_minutes` / `as_of` — 数据延迟分钟数和时间戳，Agent 应据此标注时效
+- **盘后 `as_of` 可能显示 14:57**：这是源数据的最后时间戳，但价格已是 official close（与 daily 偏差 0.000%），不影响准确性
 
 **示例问题**：「688017 今天涨了多少？」「茅台现在什么价格？」
 

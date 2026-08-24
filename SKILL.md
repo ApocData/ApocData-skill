@@ -163,7 +163,7 @@ curl -s "$BASE/stock?symbol=000001"
 - 所有接口**只读、免鉴权**，无需注册或 token
 - symbol 统一 **6 位数字代码**；指数/可转债用带后缀的 `tsCode`
 - 单次请求超时建议 10 秒；复杂画像优先**并发**调用
-- **收盘后取收盘价请用 `daily` 而非 `quote`**：`quote` 为盘中实时快照（15 分钟延迟），收盘后 `as_of` 可能停在 14:57；`daily` 在盘后更新为最终收盘价，更可靠
+- **收盘后 `quote` 价格已是最终收盘价**：盘后 `quote` 返回 official close（与 `daily` 偏差 0.000%），`as_of` 可能显示 14:57 但价格准确，可放心使用；仅盘中（09:30-15:00）`quote` 为 15min 延迟快照
 - **空数据 ≠ 接口异常**：`success=true` + 空数组是数据稀疏，不是报错
 - **token 紧张时**：用 `?fields=` 裁剪 + `?format=compact` 紧凑模式，可省 60-90% token
 - **小模型（<15B）**：用 `references/SKILL-compact.md`（~3KB 精简版）代替全文注入，避免关键信息被淹没
