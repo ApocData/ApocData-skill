@@ -10,9 +10,9 @@ description: "Use when users ask for A-share stock quotes, financials, capital f
 ## 安装
 
 ```bash
-# v2.0.0 多文件结构（推荐）
+# v2.0.2 多文件结构（推荐）
 mkdir -p ~/.claude/skills/apocdata
-curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.0.tar.gz \
+curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.2.tar.gz \
   | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 

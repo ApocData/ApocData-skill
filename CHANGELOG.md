@@ -4,6 +4,22 @@ All notable changes to the ApocData Skill are documented in this file.
 
 ---
 
+## [v2.0.2] — 2026-08-24
+
+### Fixed
+
+- Cleaned up stale weekend data in `stock_hot_dc` (hot-rank): data bridge was writing
+  Friday's prices with Saturday/Sunday trade_dates, causing API to return non-trading-day
+  records as "latest". Removed 1,595 dirty records (8/22 + 8/23).
+- Updated all install script references from v2.0.0 → v2.0.2 across SKILL.md, README,
+  README.zh-CN, install.sh, docs/skill/*, and blade-service skill-template.
+
+### Changed
+
+- Install command now points to v2.0.2 tag.
+
+---
+
 ## [v2.0.0] — 2026-08-12
 
 ### 🏗️ Breaking: Multi-file restructuring
@@ -40,7 +56,7 @@ curl -L --fail -o ~/.claude/skills/apocdata/SKILL.md \
 
 # New (v2.x, multi-file) — recommended
 mkdir -p ~/.claude/skills/apocdata
-curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.0.tar.gz \
+curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.2.tar.gz \
   | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
