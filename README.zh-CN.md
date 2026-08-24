@@ -135,7 +135,7 @@ curl -sL https://gitee.com/apocdata/ApocData-skill/repository/archive/v2.0.0.tar
   "mcpServers": {
     "apocdata": {
       "command": "npx",
-      "args": ["-y", "@apocdata/mcp-server"]
+      "args": ["-y", "@apocdata-info/mcp-server"]
     }
   }
 }

@@ -121,7 +121,7 @@ Restart Claude Code and the skill will be auto-detected.
   "mcpServers": {
     "apocdata": {
       "command": "npx",
-      "args": ["-y", "@apocdata/mcp-server"]
+      "args": ["-y", "@apocdata-info/mcp-server"]
     }
   }
 }
