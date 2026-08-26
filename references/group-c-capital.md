@@ -22,6 +22,8 @@ curl -s "$BASE/moneyflow?symbol=000001&limit=10"
 
 北向（陆股通）、南向（港股通）每日资金流。
 
+> 注：`south_money`（南向/港股通）为港股方向资金流；若项目不涉及港股，可忽略该字段，仅用 `north_money`（北向/陆股通）即可覆盖 A 股所需的北向资金视角。
+
 ```bash
 curl -s "$BASE/hsgt?limit=10"
 # 返回: trade_date, hgt, sgt, ggt_ss, ggt_sz, north_money, south_money

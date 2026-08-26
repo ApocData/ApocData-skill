@@ -19,7 +19,8 @@
 # 默认：最新 5 条，不含完整 content
 curl -s "$BASE/announcements?symbol=000001"
 # 返回: title, summary, ann_date, publish_time, category,
-#       importance, sentiment, keywords, source, url
+#       importance, keywords, source, url
+# 注：公开接口当前【不返回】sentiment 字段（曾规划的"情感标注"尚未上线/已下线），调用方勿依赖该字段
 
 # 全文场景：显式开启 content，并主动降低 limit
 curl -s "$BASE/announcements?symbol=000001&limit=1&includeContent=true"
@@ -38,8 +39,12 @@ curl -s -G "$BASE/announcements" --data-urlencode "symbol=000001" --data-urlenco
 curl -s "$BASE/announcements?symbol=000001&limit=20&includeContent=false"
 
 # 列表 + 字段裁剪组合（最极致省 token）
-curl -s "$BASE/announcements?symbol=000001&limit=20&includeContent=false&fields=title,ann_date,category,sentiment"
+curl -s "$BASE/announcements?symbol=000001&limit=20&includeContent=false&fields=title,ann_date,category,keywords"
 ```
+
+> ⚠️ **数据范围与体量提示（调用前必读）**
+> - **H 股公告会混入**：A+H 公司的 H 股披露（港交所月报/董事会通告，繁体中文、`keywords` 常为空、`category=company_announcement`）会出现在本接口返回中。若只关注 A 股正式披露，需按标题/正文特征自行过滤。
+> - **超大 content 撑爆 token**：个别招股书 `content` 可达 70 万字以上（如 688835 招股说明书约 72 万字）。`includeContent=true` 全量拉取单条即可耗尽上下文，务必配合 `limit=1` + `fields=` 裁剪，或默认 `includeContent=false` 仅取摘要。
 
 **示例问题**：
 - 「平安银行最近发布了哪些公告？」（默认 5 条）

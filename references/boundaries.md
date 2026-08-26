@@ -68,13 +68,15 @@
 
 | 错误码 | 触发场景 | 调用方应对 |
 |---|---|---|
-| `INVALID_PARAM_VALUE` | 枚举值非法（type/direction/kind/exchange） | 按 msg 文本里的"仅支持 ..."重试 |
+| `INVALID_PARAM_VALUE` | 枚举值非法（如 `sector-flow?type`、`margin?exchange`） | 按 msg 文本里的"仅支持 ..."重试 |
 | `INVALID_PARAM_FORMAT` | 日期格式错（必须 YYYYMMDD） | 按格式重试 |
 | `MISSING_REQUIRED_PARAM` | start/end 非成对传入等 | 补齐参数 |
 | `PARAM_OUT_OF_RANGE` | 日期跨度超 366 天等 | 缩短跨度 |
 | `RESOURCE_NOT_FOUND` | symbol 在 stock_basic_info 中找不到 | 校验股票代码，或先用 stocks 搜索 |
 
 > 参数错误响应是 `{"code":400,"success":false,"msg":"..."}` 的 R 包装结构，HTTP 状态码为 400。资源不存在默认保持兼容响应，可通过服务端开关升级为 HTTP 404。结构化错误信息同时写入 header。
+
+> ⚠️ **枚举校验因接口而异**：`sector-flow`（`type`：industry/concept/region）、`margin`（`exchange`：SSE/SZSE/BSE）等接口会校验枚举参数并返回 400 `INVALID_PARAM_VALUE`；但 `announcements` / `hsgt` 等接口**不校验 `type` 枚举**（`hsgt` 甚至无 `type` 参数），传非法 `type` 会被静默忽略（返回 200 正常数据）。调用方不要假设所有接口都做枚举校验——具体合法值以各接口报错的 `msg` 为准。
 
 **`RESOURCE_NOT_FOUND` 响应示例**（Agent 必须识别此结构，不要当成功数据处理）：
 

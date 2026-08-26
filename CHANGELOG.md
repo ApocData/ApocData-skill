@@ -4,6 +4,26 @@ All notable changes to the ApocData Skill are documented in this file.
 
 ---
 
+## [v2.0.3] — 2026-08-26
+
+### Fixed（文档层，基于对 v2.0.0/v2.0.2 接口的实测核对）
+
+- `references/group-a-quote.md`：
+  - A5 段「已自动排除 B 股」措辞不准确——`stocks` 库内 B 股（如 201872 招港B）、退市股（如 605081 退市太和）可被 `q=` 搜出，调用方需按 symbol 过滤 A 股段（含科创板 688 / 创业板 301）。
+  - A5 段服务边界改为「主覆盖 A 股，库内残留个别 B 股/退市股/H 股公告需过滤」。
+- `references/group-e-events.md`：
+  - E2 段移除并不存在的 `sentiment` 返回字段（接口当前根本不返回该键，非"空值"）。
+  - E2 段 fields 裁剪示例中的 `sentiment` 改为 `keywords`。
+  - E2 段新增 H 股公告混入 A 股流、超大 `content`（招股书可达 70 万字+）的调用提示框。
+- `references/group-c-capital.md`：C2 `hsgt` 段注明 `south_money`（南向/港股通）为港股方向资金流，不涉及港股可忽略、仅用 `north_money`。
+- `references/boundaries.md`：
+  - 错误码表补「枚举校验因接口而异」：`sector-flow` 校验 `type`、`margin` 校验 `exchange`；`announcements`/`hsgt` 不校验 `type`（实测 `type=foobar` 返回 200 正常数据）。
+  - 表后新增警告框说明枚举校验因接口而异，避免调用方误以为所有接口都做枚举校验。
+
+> 本次为纯文档层修正，不改变任何接口行为。
+
+---
+
 ## [v2.0.2] — 2026-08-24
 
 ### Fixed
