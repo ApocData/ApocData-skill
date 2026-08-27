@@ -105,9 +105,9 @@ ApocData（天启至数）专注于为 AI Agent 提供 A 股市场数据服务�
 ### macOS / Linux
 
 ```bash
-# v2.0.4 多文件结构，查看最新版本: https://github.com/ApocData/ApocData-skill/releases
+# v2.0.5 多文件结构，查看最新版本: https://github.com/ApocData/ApocData-skill/releases
 mkdir -p ~/.claude/skills/apocdata
-curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.4.tar.gz \
+curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.5.tar.gz \
   | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
@@ -115,18 +115,9 @@ curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.4.tar
 
 ```powershell
 New-Item -ItemType Directory -Force -Path ~\.claude\skills\apocdata
-Invoke-WebRequest -Uri https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.4.tar.gz -OutFile ~\Downloads\apocdata.tar.gz
+Invoke-WebRequest -Uri https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.5.tar.gz -OutFile ~\Downloads\apocdata.tar.gz
 tar xzf ~\Downloads\apocdata.tar.gz -C ~\.claude\skills\apocdata --strip-components=1
 ```
-
-### 国内用户（Gitee 镜像）
-
-```bash
-mkdir -p ~/.claude/skills/apocdata
-curl -sL https://gitee.com/apocdata/ApocData-skill/repository/archive/v2.0.4.tar.gz \
-  | tar xz -C ~/.claude/skills/apocdata --strip-components=1
-```
-
 
 ### MCP 安装（Claude Desktop / Cursor / ChatGPT）
 

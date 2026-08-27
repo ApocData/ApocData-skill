@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # ApocData Skill — one-line installer
-# Usage: curl -sL https://raw.githubusercontent.com/ApocData/ApocData-skill/v2.0.4/scripts/install.sh | bash
+# Usage: curl -sL https://raw.githubusercontent.com/ApocData/ApocData-skill/v2.0.5/scripts/install.sh | bash
 set -euo pipefail
 
-VERSION="${APOCDATA_VERSION:-v2.0.4}"
+VERSION="${APOCDATA_VERSION:-v2.0.5}"
 REPO="ApocData/ApocData-skill"
 INSTALL_DIR="${HOME}/.claude/skills/apocdata"
 

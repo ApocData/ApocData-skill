@@ -4,6 +4,13 @@ All notable changes to the ApocData Skill are documented in this file.
 
 ---
 
+## [v2.0.5] — 2026-08-27
+
+### Fixed
+
+- Removed the unavailable Gitee archive command after its `v2.0.4` URL was verified to return HTTP 404.
+- Updated active GitHub install commands and the installer default to `v2.0.5`.
+
 ## [v2.0.4] — 2026-08-27
 
 ### Fixed
