@@ -23,7 +23,7 @@ curl -s "$BASE/moneyflow?symbol=688017&limit=5"    # 近 5 日主力净流入
 curl -s "$BASE/hk-hold?symbol=688017&limit=5"      # 北向持仓变动
 
 # 5) 近期事件
-curl -s "$BASE/announcements?symbol=688017&limit=3&includeContent=false"  # 近 3 条公告摘要
+curl -s "$BASE/announcements?symbol=688017&limit=3&includeContent=false"  # 近 3 条公告元数据（summary 可能为空）
 ```
 
 **综合判断要点**：估值（stock）+ 业绩（financial）+ 资金（moneyflow/hk-hold）+ 催化（announcements）四维交叉。

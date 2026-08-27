@@ -108,7 +108,7 @@ The data service platform is the unified entry point for ApocData. It provides:
 
 ```bash
 mkdir -p ~/.claude/skills/apocdata
-curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.2.tar.gz \
+curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.4.tar.gz \
   | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
@@ -138,7 +138,7 @@ Import and use — no auth required.
 ### Alternative: install script
 
 ```bash
-curl -sL https://raw.githubusercontent.com/ApocData/ApocData-skill/v2.0.2/scripts/install.sh | bash
+curl -sL https://raw.githubusercontent.com/ApocData/ApocData-skill/v2.0.4/scripts/install.sh | bash
 ```
 
 ---

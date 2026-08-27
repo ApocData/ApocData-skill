@@ -13,7 +13,7 @@
 
 ## E2. 公司公告 `announcements`
 
-按股票查公告（标题、AI 摘要、公告日期、类型、链接；可选 Markdown 完整正文），**支持区间/类型/关键字过滤**，默认 5 条、上限 30 条。
+按股票查公告（标题、公告日期、类型、链接；可选 AI 摘要和 Markdown 完整正文），**支持区间/类型/关键字过滤**，默认 5 条、上限 30 条。`summary` 由异步摘要管道生成，可能为 `null`，调用方必须判空，不能把摘要缺失当作无公告。
 
 ```bash
 # 默认：最新 5 条，不含完整 content
@@ -44,7 +44,8 @@ curl -s "$BASE/announcements?symbol=000001&limit=20&includeContent=false&fields=
 
 > ⚠️ **数据范围与体量提示（调用前必读）**
 > - **H 股公告会混入**：A+H 公司的 H 股披露（港交所月报/董事会通告，繁体中文、`keywords` 常为空、`category=company_announcement`）会出现在本接口返回中。若只关注 A 股正式披露，需按标题/正文特征自行过滤。
-> - **超大 content 撑爆 token**：个别招股书 `content` 可达 70 万字以上（如 688835 招股说明书约 72 万字）。`includeContent=true` 全量拉取单条即可耗尽上下文，务必配合 `limit=1` + `fields=` 裁剪，或默认 `includeContent=false` 仅取摘要。
+> - **摘要不是强保证字段**：新入库记录可能尚未生成 `summary`。需要可靠判断公告内容时，应先判空，再按需用 `includeContent=true` 获取正文。
+> - **超大 content 撑爆 token**：个别招股书 `content` 可达 70 万字以上（如 688835 招股说明书约 72 万字）。`includeContent=true` 全量拉取单条即可耗尽上下文，务必配合 `limit=1` + `fields=` 裁剪；默认 `includeContent=false` 只返回元数据和可用摘要。
 
 **示例问题**：
 - 「平安银行最近发布了哪些公告？」（默认 5 条）

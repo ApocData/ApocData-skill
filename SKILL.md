@@ -10,9 +10,9 @@ description: "Use when users ask for A-share stock quotes, financials, capital f
 ## 安装
 
 ```bash
-# v2.0.2 多文件结构（推荐）
+# v2.0.4 多文件结构（推荐）
 mkdir -p ~/.claude/skills/apocdata
-curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.2.tar.gz \
+curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.4.tar.gz \
   | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
@@ -60,13 +60,13 @@ curl -s "$BASE/stock?symbol=000001"
 | 涨停盘后复盘 / 「今天涨停的共性」 | `limit-list?kind=U` → `limit-step` → `sector-flow` → `hot-money-detail` | date 不传默认最新交易日 |
 | 板块 / 概念热度 | `sector-flow` → `concepts` → `concept-stocks` 或 `ths-boards` → `ths-board-stocks` | 东财与同花顺双源，可交叉验证 |
 | 新闻 / 市场事件 | ~~`news?q=关键词`~~ **已下线** → 改用 `announcements` 查正式披露 | `/news` 接口已下线 |
-| 公告 / 事件驱动 | `announcements` → `survey` → `share-float` → `repurchase` → `dividend` | announcements 返回 Markdown 全文 + AI 摘要 |
+| 公告 / 事件驱动 | `announcements` → `survey` → `share-float` → `repurchase` → `dividend` | 公告正文可选；`summary` 可能为空，使用前需判空 |
 | 大盘择时 / 宏观判断 | `index-daily?tsCode=000300.SH` → `macro/latest?type=PMI` → `macro/latest?type=CPI` → `hsgt` | 宏观接口最多 12 条 |
 | 可转债套利 | `convertible-bonds` → `cb-price-chg` → `quote`(正股) | 用 stkCode 反查正股可转债 |
 | 找游资偏好的票 | `hot-money` → `hot-money-detail` → `dragon-tiger` | 当日游资明细 + 历史席位 |
 | 退市/风险排查 | `st` → `share-float` → `holders` → `announcements` | st 返回 null 即非 ST |
 | 业绩超预期追踪 | `express` → `financial` → `survey` → `announcements` | express 是季报前的先行指标 |
-| 找具体行业 / 名字模糊 | `stocks?q=关键词` → `stock` 逐只确认 | 支持代码、名称、行业三种模糊匹配 |
+| 找具体行业 / 名字模糊 | `stocks?q=名称或代码&industry=行业` → `stock` 逐只确认 | `q` 模糊匹配名称/代码；`industry` 是独立精确过滤参数 |
 
 ---
 

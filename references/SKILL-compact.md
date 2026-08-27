@@ -13,10 +13,10 @@
 | 估值+走势 | `stock` → `financial` → `daily?limit=30` | 看 PE/PB |
 | 资金追踪 | `moneyflow` → `hsgt` → `hk-hold` | 北向 20:00 后更新 |
 | 涨停复盘 | `limit-list?kind=U` → `limit-step` → `sector-flow` | date 不传默认最新 |
-| 公告查询 | `announcements` | 可用 `fields=title,summary,ann_date` 省 token |
+| 公告查询 | `announcements` | 可用 `fields=title,summary,ann_date` 省 token；`summary` 可能为空 |
 | 新闻 | ~~`news`~~ **已下线** → 用 `announcements` | — |
 | 可转债 | `convertible-bonds` → `cb-price-chg` | 用 stkCode 反查正股 |
-| 搜索的股票 | `stocks?q=关键词` | 支持名称/代码/行业模糊匹配 |
+| 搜索股票 | `stocks?q=名称或代码&industry=行业` | `q` 模糊匹配名称/代码；`industry` 独立精确过滤 |
 | 退市排查 | `st` → `share-float` → `holders` | st 返回 null 即非 ST |
 | 业绩快报 | `express` → `financial` | 仅季报前后有数据 |
 

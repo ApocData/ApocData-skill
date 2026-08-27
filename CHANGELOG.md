@@ -4,6 +4,15 @@ All notable changes to the ApocData Skill are documented in this file.
 
 ---
 
+## [v2.0.4] — 2026-08-27
+
+### Fixed
+
+- Corrected `announcements` date parameters to canonical `startDate/endDate`, while documenting the compatible `start/end` aliases.
+- Corrected stock search semantics: `q` searches name/code only; `industry` is a separate exact filter; B-share codes are filtered but delisted A shares may remain.
+- Documented `announcements.summary` as optional because asynchronous summary generation may be delayed or unavailable.
+- Updated active install commands and the installer default from `v2.0.2` to `v2.0.4`.
+
 ## [v2.0.3] — 2026-08-26
 
 ### Fixed（文档层，基于对 v2.0.0/v2.0.2 接口的实测核对）

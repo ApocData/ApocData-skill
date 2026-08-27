@@ -150,7 +150,7 @@
 # 财务接口只取关键字段（60+ 字段 → 3 字段）
 curl -s "$BASE/financial?symbol=000001&fields=roe,revenue,net_profit"
 
-# 公告只取标题摘要不取 Markdown 全文（节省 80% token）
+# 公告只取标题和可用摘要，不取 Markdown 全文（summary 可能为空）
 curl -s "$BASE/announcements?symbol=000001&fields=title,summary,ann_date"
 
 # 任意接口都能用：行情只取 3 个核心字段
