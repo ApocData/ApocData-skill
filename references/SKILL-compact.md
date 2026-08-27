@@ -31,7 +31,7 @@
 ## 参数易错点
 
 - **symbol**：A 股 6 位代码（`000001`）；指数用 `tsCode=000300.SH`；可转债用 `stkCode=688535.SH`
-- **日期 YYYYMMDD**：start/end 必须成对传入
+- **日期参数**：`calendar` 用 `start/end`；`announcements` 用 `startDate/endDate`（兼容 `start/end` 别名），格式 YYYYMMDD
 - **中文参数必须 URL 编码**：`curl -G --data-urlencode "q=银行"`
 - **枚举参数用英文**：`sector-flow?type=industry`（不用 `行业`）
 

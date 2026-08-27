@@ -150,7 +150,7 @@ curl -s "$BASE/stock?symbol=000001"
 - **枚举参数优先用英文**：`sector-flow?type=industry/concept/region`
 - **中文关键字必须 URL 编码**：用 `curl -G --data-urlencode "q=年报"`
 - **symbol vs tsCode**：A 股 `symbol=000001`（6 位）；指数 `tsCode=000300.SH`；可转债 `stkCode=688535.SH`
-- **日期格式 YYYYMMDD**：start/end 必须成对传入
+- **日期参数按接口区分**：`calendar` 使用 `start/end`；`announcements` 使用 `startDate/endDate`（可单独传入，也兼容旧版 `start/end` 别名）。日期格式均为 YYYYMMDD
 - **错误响应**：HTTP 400 + `success=false` + `X-Tdc-Error-Code` header；先检查状态再读 data
 - **不存在 symbol**：返回 `RESOURCE_NOT_FOUND`，先用 `stocks` 搜索确认
 

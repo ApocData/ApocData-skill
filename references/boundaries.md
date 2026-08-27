@@ -26,7 +26,7 @@
 - **枚举参数优先用英文**：`sector-flow?type=industry/concept/region`（中文 `行业/概念/地域` 仍兼容但需 URL 编码，bash 直传中文偶发被吞）
 - **中文搜索关键字必须 URL 编码**：`q=` / `industry=` 等带中文时（如 `announcements?q=年报`、`stocks?q=银行`），bash 直接拼 URL 会 `HTTP 400`；请用 `curl -G --data-urlencode "q=年报"`，或在代码里交给 HTTP 客户端自动编码
 - **symbol vs tsCode**：A 股个股一律 6 位数字 `symbol=000001`（不带交易所后缀）；指数用带后缀的 `tsCode=000300.SH`；可转债正股反查用 `stkCode=688535.SH`
-- **日期格式统一 YYYYMMDD**：start/end 必须**成对**传入，单传无效
+- **日期格式统一 YYYYMMDD**：`calendar` 使用 `start/end`；`announcements` 使用 `startDate/endDate`，支持单边过滤并兼容旧版 `start/end` 别名
 - **错误参数返回结构化失败**：HTTP 状态码为 400，响应体为 `code=400, success=false`，并通过 `X-Tdc-Error-Code` / `X-Tdc-Error-Field` 标明错误；Agent 必须先检查 HTTP 状态和 `success`，再读取 `data`
 - **不存在的 symbol 返回 `RESOURCE_NOT_FOUND`**：响应体为 `code=400, success=false`，应校验代码或先调用 `stocks` 搜索；正常股票的 `st` 数据仍可能为 `null`
 
@@ -70,7 +70,7 @@
 |---|---|---|
 | `INVALID_PARAM_VALUE` | 枚举值非法（如 `sector-flow?type`、`margin?exchange`） | 按 msg 文本里的"仅支持 ..."重试 |
 | `INVALID_PARAM_FORMAT` | 日期格式错（必须 YYYYMMDD） | 按格式重试 |
-| `MISSING_REQUIRED_PARAM` | start/end 非成对传入等 | 补齐参数 |
+| `MISSING_REQUIRED_PARAM` | 必填参数缺失 | 补齐对应接口的必填参数 |
 | `PARAM_OUT_OF_RANGE` | 日期跨度超 366 天等 | 缩短跨度 |
 | `RESOURCE_NOT_FOUND` | symbol 在 stock_basic_info 中找不到 | 校验股票代码，或先用 stocks 搜索 |
 
