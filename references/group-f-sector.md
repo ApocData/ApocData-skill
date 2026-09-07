@@ -4,7 +4,7 @@
 
 ## F1. 东财概念板块 `concepts`
 
-东方财富概念板块目录（最新交易日，含当日热度/领涨股）。
+东方财富概念板块目录（最新交易日，含当日热度/领涨股；如 `trade_date` 与 `updated_at` 不一致，以 `updated_at` 判断最近刷新时间）。
 
 ```bash
 curl -s "$BASE/concepts?q=AI&limit=30"
