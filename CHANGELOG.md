@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the ApocData Skill are documented in this file.
+All notable changes to the Apocdata Skill are documented in this file.
 
 ---
 
