@@ -1,7 +1,7 @@
-# ApocData Skill — 精简版（小模型专用）
+# Apocdata Skill — 精简版（小模型专用）
 
 > **适用**：<15B 参数的本地模型或上下文窗口有限的场景。完整版见 `SKILL.md`。
-> 所有接口 HTTP GET，免鉴权，BASE = `https://www.apocdata.com/api/blade-dataplatform/open/data`
+> 所有接口 HTTP GET，BASE = `https://www.apocdata.com/api/blade-dataplatform/open/data`
 
 ## 场景速查
 
