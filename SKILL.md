@@ -3,9 +3,13 @@ name: apocdata
 description: "Use when users ask for A-share stock quotes, financials, capital flows, technical factors, news, announcements, sectors, convertible bonds, macro data, or comprehensive stock analysis through the ApocData public API. Trigger keywords: 股票, 行情, 估值, 财务, 资金流, 涨停, 跌停, 炸板, 打板, 连板, 板块, 概念, 可转债, 宏观, 公告, 调研, 龙虎榜, 游资, 北向资金, 两融, 排行, 人气榜, 指数, 筹码, 获利盘, ST, 分红, 回购, 大宗交易, 量化因子, 技术面, 交易日历, 下修, 转股价, 业绩快报, 股东户数, 解禁, profile, ApocData, A股数据. Do NOT trigger for: cryptocurrency, crypto, Bitcoin, US stocks, US market, futures, options, forex, Hong Kong stocks, 加密货币, 比特币, 美股, 期货, 外汇, or any non-A-share market."
 ---
 
-# 天启至数™ · ApocData Skill — A 股数据 Skill
+# 天启至数 Apocdata — A 股数据服务
 
-> **天启技能** —— 免鉴权，零依赖，直接用 curl 调用，支持 Claude / OpenAI / 通义千问等所有 Agent。
+> **让 AI 读懂 A 股公告。** 全市场公告解析为结构化数据：AI 摘要（`summary`）、
+> 类型（`category`）、重要性（`importance`）、情感倾向（`sentiment`），条条可溯源（`url`）；
+> 并覆盖行情、财务、资金流、龙虎榜、宏观等 45+ 数据接口。
+> 免费体验额度开箱即用，注册解锁更高额度与更多能力。
+> 支持 Cursor / Codex / Hermes / DeepSeek / Kimi / 通义千问 / 智谱清言等所有 Agent。
 
 ## 安装
 
@@ -38,11 +42,11 @@ curl -s "$BASE/stock?symbol=000001"
 
 | 端点 | 用途 |
 |---|---|
-| `https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json` | **OpenAPI 3 JSON（推荐，导入即用）**，免鉴权匿名访问，覆盖全部公开接口 |
+| `https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json` | **OpenAPI 3 JSON（推荐，导入即用）**，免费体验额度匿名访问，覆盖全部公开接口 |
 
 > spec 的 `servers.url` 已内置为公网基址，导入后各接口路径直接拼接即可调用，无需再改 base。
 
-无需注册，匿名可访问。
+免费体验额度，无需注册即可调用；注册解锁更高额度与更多数据能力。
 
 ---
 
@@ -161,7 +165,7 @@ curl -s "$BASE/stock?symbol=000001"
 
 ## 注意事项
 
-- 所有接口**只读、免鉴权**，无需注册或 token
+- 所有接口**只读**；免费体验额度无需注册即可调用，注册解锁更高额度与更多数据能力
 - symbol 统一 **6 位数字代码**；指数/可转债用带后缀的 `tsCode`
 - 单次请求超时建议 10 秒；复杂画像优先**并发**调用
 - **收盘后 `quote` 价格已是最终收盘价**：盘后 `quote` 返回 official close（与 `daily` 偏差 0.000%），`as_of` 可能显示 14:57 但价格准确，可放心使用；仅盘中（09:30-15:00）`quote` 为 15min 延迟快照
@@ -169,7 +173,7 @@ curl -s "$BASE/stock?symbol=000001"
 - **token 紧张时**：用 `?fields=` 裁剪 + `?format=compact` 紧凑模式，可省 60-90% token
 - **小模型（<15B）**：用 `references/SKILL-compact.md`（~3KB 精简版）代替全文注入，避免关键信息被淹没
 - 输出分析必须标注数据时效（`trade_date` / `delayed_minutes` / Freshness header）
-- 数据来源：天启云(ApocData Cloud)，公告 T+0 08:00，北向 20:00
+- 数据来源：天启云（Apocdata Cloud），公告 T+0 08:00，北向 20:00
 
 ---
 
