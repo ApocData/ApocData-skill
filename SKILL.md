@@ -9,7 +9,7 @@ description: "A-share data service with structured announcement parsing: every a
 > 类型（`category`）、重要性（`importance`）、情感倾向（`sentiment`），条条可溯源（`url`）；
 > 并覆盖行情、财务、资金流、龙虎榜、宏观等 45+ 数据接口。
 > 免费体验额度开箱即用，注册解锁更高额度与更多能力。
-> 支持 Cursor / Codex / Hermes / DeepSeek / Kimi / 通义千问 / 智谱清言等所有 Agent。
+> 支持 WorkBuddy / Codex / Hermes / DeepSeek / Kimi / 千问 / 智谱清言等所有 Agent。
 
 ## 安装
 

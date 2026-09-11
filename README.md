@@ -16,7 +16,7 @@
 >
 > **The A-share announcements and fundamentals database built for AI · parsed · structured · traceable**
 
-> All-market announcements parsed into structured data: AI summary · category · importance · sentiment, fully traceable to source. Also 45+ endpoints for quotes, financials, capital flows, dragon-tiger lists and macro data. Free tier for instant access; register for higher quotas. Compatible with Cursor, Codex, Hermes, DeepSeek, Kimi, Qwen, Zhipu and any AI agent that supports tool calling.
+> All-market announcements parsed into structured data: AI summary · category · importance · sentiment, fully traceable to source. Also 45+ endpoints for quotes, financials, capital flows, dragon-tiger lists and macro data. Free tier for instant access; register for higher quotas. Compatible with WorkBuddy, Codex, Hermes, DeepSeek, Kimi, Qwen, Zhipu and any AI agent that supports tool calling.
 
 The [`SKILL.md`](./SKILL.md) in this repository is a capability card that can
 be loaded directly into AI agents, letting LLMs query A-share market data

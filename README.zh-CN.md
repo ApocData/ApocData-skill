@@ -9,7 +9,7 @@
 > 并覆盖行情、财务、资金流、龙虎榜、宏观等 45+ 数据接口。
 > 免费体验额度开箱即用，注册解锁更高额度与更多能力。
 > 已上架 WorkBuddy / skills.sh / LobeHub 等主流技能商店，
-> 兼容 Cursor、Codex、Hermes、DeepSeek、Kimi、通义千问、智谱清言
+> 兼容 WorkBuddy、Codex、Hermes、DeepSeek、Kimi、千问、智谱清言
 > 及任何支持工具调用的 AI Agent。
 
 本仓库提供的 [`SKILL.md`](./SKILL.md) 是一份可直接装入 AI Agent 的能力卡片，
