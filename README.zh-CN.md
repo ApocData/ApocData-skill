@@ -1,7 +1,16 @@
-# ApocData · 天启至数 · A 股数据 Skill
+# 天启至数 Apocdata — A股数据服务
 
-> 免鉴权、零依赖，用 `curl` 直接调用 A 股行情 / 财务 / 资金 / 因子 / 公告等 45 个活跃数据接口，
-> 支持 Claude、ChatGPT、通义千问、Kimi、DeepSeek 等所有支持工具调用的 AI Agent。
+> ## 让 AI 读懂 A 股公告
+>
+> **为 AI 而生的 A 股公告与基本面数据库 · 解析过 · 结构化 · 可溯源**
+
+> 全市场公告解析为结构化数据：
+> AI 摘要 · 类型 · 重要性 · 情感倾向，条条可溯源；
+> 并覆盖行情、财务、资金流、龙虎榜、宏观等 45+ 数据接口。
+> 免费体验额度开箱即用，注册解锁更高额度与更多能力。
+> 已上架 WorkBuddy / skills.sh / LobeHub 等主流技能商店，
+> 兼容 Cursor、Codex、Hermes、DeepSeek、Kimi、通义千问、智谱清言
+> 及任何支持工具调用的 AI Agent。
 
 本仓库提供的 [`SKILL.md`](./SKILL.md) 是一份可直接装入 AI Agent 的能力卡片，
 让大模型无需任何 SDK，即可查询 A 股市场数据并完成投研分析。
@@ -14,8 +23,8 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/endpoints-45-green" alt="45 endpoints"/>
-  <img src="https://img.shields.io/badge/auth-none-brightgreen" alt="No auth required"/>
   <img src="https://img.shields.io/badge/MCP-46_tools-blue" alt="MCP 46 tools"/>
+  <img src="https://img.shields.io/badge/free_tier-available-brightgreen" alt="免费体验额度"/>
   <img src="https://img.shields.io/badge/license-Apache_2.0-blue" alt="License"/>
 </p>
 
@@ -48,23 +57,69 @@ curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=
 
 ---
 
-## 为什么选 ApocData？
+## 公告解析 —— 从 PDF 到结构化数据
 
-| | **ApocData** | tushare | akshare | 同花顺 iFinD |
+传统数据源提供公告原文，需自行阅读与解析；天启至数 Apocdata 输出解析后的结构化数据，AI 可直接使用。
+
+每份公告包含：
+
+- **AI 摘要**（`summary`）—— 核心事项提炼，无需通读全文
+- **类型分类**（`category`）—— 业绩、分红、回购、增持、减持、诉讼等，支持程序化筛选
+- **重要性分级**（`importance`）—— 快速定位需重点关注的公告
+- **情感倾向**（`sentiment`）—— 利好、利空、中性，辅助判断影响方向
+- **原始链接**（`url`）—— 每条结论均可回溯至公告原文
+
+同时返回：`title`、`ann_date`、`publish_time`、`keywords`、`source`，
+以及 `content`（Markdown 全文，需 `includeContent=true`）。
+
+覆盖全市场公告，含沪深港通标的、ST 及退市风险类证券。
+
+---
+
+## 为什么选择天启至数 Apocdata
+
+| | **天启至数 Apocdata** | tushare | akshare | 同花顺 iFinD |
 |---|---|---|---|---|
-| 鉴权 | **无需** | 付费 Token | Python 环境 + akshare 安装 | 申请审批 |
-| 安装步骤 | **0** | 3+（注册→获取 token→配置） | 2+（pip install + 依赖） | 5+ |
-| MCP 支持 | **✅ 46 工具** | ❌ | ❌ | ❌ |
-| Skill 支持 | **✅ Claude / GPT / 通义** | ❌ | ❌ | ❌ |
-| 一行 curl 可用 | **✅** | ❌ | ❌ | ❌ |
-| 接口数 | 45 | 100+（老旧） | 50+ | 有限 |
+| 公告解析 | **结构化 + AI 摘要 + 情感倾向** | 原始文本 | 原始文本 | 原始文本 |
+| 接入门槛 | **免费体验额度，无需注册** | 需付费 token | 需 Python 环境 | 需申请审批 |
+| 配置步骤 | **0 步** | 3+ 步（注册→token→配置） | 2+ 步（pip+依赖） | 人工审核 |
+| AI Agent 原生 | **Skill + MCP** | 旧版插件 | 不支持 | 不支持 |
+| curl 直调 | **支持** | 需 SDK | 需 SDK | 需 SDK |
+| A 股接口数 | **45** | 100+（付费墙） | 100+（免费） | 200+（付费） |
+| MCP 支持 | **46 个工具** | 无 | 无 | 无 |
 
-> *对比基于 2026-08 实测。tushare 免费档部分接口可用但需注册 token；akshare 需 Python 环境。*
+> *对比基于 2026-08 公开信息与实测。*
+
+---
+
+## 核心能力
+
+- **公告解析**：全市场公告经 AI 解析，输出结构化字段
+  （`title` / `category` / `importance` / `ann_date` / `summary` / `sentiment` / `url`），
+  可直接用于推理，并可溯源至原文（市面主流数据源多以原始文本提供公告）
+- **全维度覆盖**：行情、财务、估值、资金流、涨停复盘、龙虎榜、板块概念、
+  可转债、宏观指标、交易日历等 11 大类 45+ 接口，口径统一
+- **多形态接入**：Skill 技能包（一键安装）、MCP 服务器（46 工具）、
+  标准 HTTP 接口（curl 直调），覆盖所有主流 AI 生态
+- **可溯源**：每一条数据可回溯至原始公告，AI 结论有据可查
+
+---
+
+## AI 使用场景
+
+- 「贵州茅台最近的业绩快报有哪些重点？」→ 结构化抽取业绩关键点，可溯源至原始公告
+- 「帮我分析 688017 的估值水平，和同行业相比如何？」→ 聚合 PE/PB/市值 + 财务指标 + 近 30 日走势
+- 「最近 30 天有哪些 ST 股票发布了重大公告？」→ 按风险等级排序，每条带 AI 摘要与原文链接
+- 「北向资金最近重点流入了哪些行业？」→ 沪深港通 + 行业资金流，自动汇总资金流入居前的行业
 
 ---
 
 ## 目录
 
+- [公告解析](#公告解析--从-pdf-到结构化数据)
+- [为什么选择天启至数 Apocdata](#为什么选择天启至数-apocdata)
+- [核心能力](#核心能力)
+- [AI 使用场景](#ai-使用场景)
 - [产品简介](#产品简介)
 - [数据服务平台](#数据服务平台)
 - [安装](#安装)
@@ -78,9 +133,10 @@ curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=
 
 ## 产品简介
 
-ApocData（天启至数）专注于为 AI Agent 提供 A 股市场数据服务，面向 AI Agent、
-量化研究、投研内容与机构应用，提供行情、财务、资金流、龙虎榜、量化因子、
-宏观经济等全维度数据接口。
+天启至数 Apocdata 是为 AI 而生的 A 股公告与基本面数据库：解析过 · 结构化 · 可溯源。
+以公告解析为核心 —— 每份公告都变成 AI 可直接推理的结构化数据 —— 并围绕其提供
+行情、财务、资金流、龙虎榜、量化因子、宏观经济等全维度数据接口，
+面向 AI Agent、量化研究、投研内容与机构应用。
 
 ---
 
@@ -88,12 +144,12 @@ ApocData（天启至数）专注于为 AI Agent 提供 A 股市场数据服务�
 
 **平台网址：** <https://www.apocdata.com>
 
-数据服务平台是 ApocData 的统一入口，提供：
+数据服务平台是天启至数 Apocdata 的统一入口，提供：
 
-- **免鉴权开放接口** —— 本 Skill 对接的就是这一组接口，无需注册、无需 Token，
-  适合快速体验与轻量调用。
+- **免费体验额度开放接口** —— 本 Skill 对接的就是这一组接口，无需注册即可调用，
+  适合快速验证与轻量使用。
 - **OpenAPI 文档与 SDK** —— 支持 Python / TypeScript。
-- **平台版本（带 API Key）** —— 提供更高配额、更深历史、更低延迟与更多数据维度，
+- **注册与专业版（带 API Key）** —— 提供更高额度、更深历史、更低延迟与更多数据维度，
   详见下方 [版本与能力](#版本与能力)。
 
 > 本 Skill 使用的开放接口 BASE 地址：`https://www.apocdata.com/api/blade-dataplatform/open/data`
@@ -138,7 +194,7 @@ tar xzf ~\Downloads\apocdata.tar.gz -C ~\.claude\skills\apocdata --strip-compone
 https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json
 ```
 
-导入即用，免鉴权。
+导入即用，免费体验额度，无需注册。
 
 ---
 
@@ -283,9 +339,8 @@ curl -s "$BASE/daily?symbol=688017&limit=30" # 近期走势
 
 ## 版本与能力
 
-ApocData 按使用场景分为四档版本，所有版本共用同一套 API 契约，能力按版本白名单返回。
-**本 Skill 默认对接免鉴权开放接口；如需更高配额或更深数据，可升级至带 API Key
-的平台版本。**
+天启至数 Apocdata 按使用场景分为四档版本，所有版本共用同一套 API 契约，能力按版本白名单返回。
+**本 Skill 默认对接免费体验额度开放接口；注册解锁更高额度与更多数据能力。**
 
 ### 版本一览
 
@@ -330,10 +385,10 @@ ApocData 按使用场景分为四档版本，所有版本共用同一套 API 契
 
 **调用约定**
 
-- 所有接口**只读、免鉴权**，无需注册或 Token。
+- 所有接口**只读**；免费体验额度无需注册即可调用，注册解锁更高额度与更多数据能力。
 - `symbol` 统一使用 **6 位数字代码**（如 `688017`），不带交易所后缀。
 - 单次请求建议超时 10 秒。
-- 数据来源：ApocData，与 A 股数据落库周期同步。
+- 数据来源：天启云（A 股市场数据同步）。
 
 **合规说明**
 
@@ -341,6 +396,14 @@ ApocData 按使用场景分为四档版本，所有版本共用同一套 API 契
 - 衍生数据为清洗后的结构化数据，禁止二次转售。
 - 新闻仅含标题与链接，正文版权归原媒体所有。
 - 因子与信号属研究用途，**不构成任何投资建议**。
+
+---
+
+## 立即开始
+
+免费体验额度，无需注册即可调用；注册用户解锁更高额度与更多数据能力。
+
+[免费体验 →](https://www.apocdata.com) · [注册账号 →](https://www.apocdata.com/register) · [Star on GitHub →](https://github.com/ApocData/ApocData-skill)
 
 ---
 

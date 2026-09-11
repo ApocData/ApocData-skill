@@ -1,4 +1,4 @@
-# ApocData · A-Share AI Data Skill
+# 天启至数 Apocdata — A股数据服务 (Apocdata A-Share Data Skill)
 
 <p align="center">
   <b>English</b> |
@@ -7,14 +7,16 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/endpoints-45-green" alt="45 endpoints"/>
-  <img src="https://img.shields.io/badge/auth-none-brightgreen" alt="No auth required"/>
   <img src="https://img.shields.io/badge/MCP-46_tools-blue" alt="MCP 46 tools"/>
+  <img src="https://img.shields.io/badge/free_tier-available-brightgreen" alt="Free tier available"/>
   <img src="https://img.shields.io/badge/license-Apache_2.0-blue" alt="License"/>
 </p>
-> Zero-auth, zero-dependency. Use `curl` to call 45+ A-share data endpoints
-> (quotes / financials / fund flows / factors / announcements / macro).
-> Compatible with Claude, ChatGPT, Qwen, Kimi, DeepSeek and any AI agent
-> that supports tool calling.
+
+> ## Let AI read A-share announcements
+>
+> **The A-share announcements and fundamentals database built for AI · parsed · structured · traceable**
+
+> All-market announcements parsed into structured data: AI summary · category · importance · sentiment, fully traceable to source. Also 45+ endpoints for quotes, financials, capital flows, dragon-tiger lists and macro data. Free tier for instant access; register for higher quotas. Compatible with Cursor, Codex, Hermes, DeepSeek, Kimi, Qwen, Zhipu and any AI agent that supports tool calling.
 
 The [`SKILL.md`](./SKILL.md) in this repository is a capability card that can
 be loaded directly into AI agents, letting LLMs query A-share market data
@@ -49,11 +51,31 @@ curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=
 
 ---
 
-## Why ApocData?
+## Announcement Parsing — from PDF to structured data
 
-| | **ApocData** | tushare | akshare | iFinD |
+Conventional data sources hand you the raw announcement text and leave the reading and parsing to you. Apocdata returns the parsed, structured result, ready for an AI agent to consume.
+
+Every announcement carries:
+
+- **AI summary** (`summary`) — the key facts extracted, no need to read the full document
+- **Category** (`category`) — earnings, dividend, buyback, share increase/decrease, litigation and more, filterable programmatically
+- **Importance level** (`importance`) — locate the announcements that actually matter
+- **Sentiment** (`sentiment`) — positive / negative / neutral, to help judge the direction of impact
+- **Source link** (`url`) — every conclusion traces back to the original announcement
+
+Also returned: `title`, `ann_date`, `publish_time`, `keywords`, `source`, and
+`content` (full Markdown body, on `includeContent=true`).
+
+Covers all-market announcements, including Stock Connect constituents, ST and delisting-risk securities.
+
+---
+
+## Why Apocdata?
+
+| | **Apocdata** | tushare | akshare | iFinD |
 |---|---|---|---|---|
-| Auth | **None** | Paid token | Python env + install | Application approval |
+| Announcement parsing | **Structured + AI summary + sentiment** | Raw text | Raw text | Raw text |
+| Access | **Free tier, no registration** | Paid token | Python env + install | Application approval |
 | Setup steps | **0** | 3+ (register → token → config) | 2+ (pip + deps) | Manual review |
 | AI Agent native | **Skill + MCP** | Plugin (legacy) | Not supported | Not supported |
 | curl one-liner | **Direct** | Need SDK | Need SDK | Need SDK |
@@ -64,9 +86,29 @@ curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=
 
 ---
 
+## Core Capabilities
+
+- **Announcement parsing** — all-market announcements parsed by AI into structured fields
+  (`title` / `category` / `importance` / `ann_date` / `summary` / `sentiment` / `url`), directly
+  usable for reasoning and traceable to the source document (mainstream data sources mostly ship
+  announcements as raw text)
+- **Full-dimension coverage** — quotes, financials, valuation, capital flows, limit-up review,
+  dragon-tiger lists, sectors & concepts, convertible bonds, macro indicators and trading
+  calendar: 11 groups, 45+ endpoints, one consistent definition set
+- **Multiple integration paths** — Skill package (one-command install), MCP server (46 tools),
+  plain HTTP endpoints (direct curl), covering every mainstream AI ecosystem
+- **Traceable** — every data point traces back to the original announcement, so AI conclusions
+  can be checked
+
+---
+
 ## Table of Contents
 
+- [Announcement Parsing](#announcement-parsing--from-pdf-to-structured-data)
+- [Why Apocdata?](#why-apocdata)
+- [Core Capabilities](#core-capabilities)
 - [Overview](#overview)
+- [Use Cases](#use-cases)
 - [Data Service Platform](#data-service-platform)
 - [Installation](#installation)
 - [Project Structure](#project-structure)
@@ -79,10 +121,25 @@ curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=
 
 ## Overview
 
-ApocData focuses on AI-native access to China's A-share market, designed for
-AI agents, quantitative research, investment content, and institutional
-applications. We provide unified endpoints for quotes, financials, fund flows,
-dragon-tiger boards, quantitative factors, macro indicators, and more.
+Apocdata is the A-share announcements and data layer built for AI: parsed,
+structured, traceable. Announcement parsing is the core — every announcement
+becomes structured data an agent can reason over directly — and around it sits
+full-dimension coverage of quotes, financials, capital flows, dragon-tiger
+lists, quantitative factors and macro indicators, designed for AI agents,
+quantitative research, investment content, and institutional applications.
+
+---
+
+## Use Cases
+
+- *"What are the key points in Kweichow Moutai's recent earnings flash?"* → key
+  figures extracted as structured fields, traceable to the original announcement
+- *"Analyse the valuation of 688017 — how does it compare with its peers?"* →
+  PE/PB/market cap aggregated with financial metrics and the last 30 sessions
+- *"Which ST stocks published material announcements in the past 30 days?"* →
+  ranked by risk level, each with an AI summary and a source link
+- *"Which sectors has northbound capital been flowing into?"* → Stock Connect
+  plus sector capital flows, with the top inflow sectors summarised automatically
 
 ---
 
@@ -90,12 +147,12 @@ dragon-tiger boards, quantitative factors, macro indicators, and more.
 
 **Platform URL:** <https://www.apocdata.com>
 
-The data service platform is the unified entry point for ApocData. It provides:
+The data service platform is the unified entry point for Apocdata. It provides:
 
-- **Open API (no auth)** — This is what the Skill connects to. No registration,
-  no token required. Ideal for quick experiments and lightweight usage.
+- **Open API (free tier)** — This is what the Skill connects to. A free trial
+  quota is callable straight away, ideal for quick validation and lightweight usage.
 - **OpenAPI documentation & SDKs** — Python / TypeScript supported.
-- **Platform editions (with API key)** — Higher quotas, deeper history,
+- **Registered & Professional editions (with API key)** — Higher quotas, deeper history,
   lower latency, and richer data fields. See [Editions & Capabilities](#editions--capabilities).
 
 > The base URL used by this Skill: `https://www.apocdata.com/api/blade-dataplatform/open/data`
@@ -133,7 +190,7 @@ Restart Claude Code and the skill will be auto-detected.
 https://www.apocdata.com/api/blade-dataplatform/open/data/openapi.json
 ```
 
-Import and use — no auth required.
+Import and use — free tier, no registration needed.
 
 ### Alternative: install script
 
@@ -218,10 +275,10 @@ curl -s "$BASE/profile/full?symbol=688017"
 
 ## Editions & Capabilities
 
-ApocData is organized into four editions to match different use cases.
+Apocdata is organized into four editions to match different use cases.
 All editions share the same API contract; capabilities are filtered by
-edition whitelist. **This Skill defaults to the no-auth open endpoints.
-Upgrade to a platform edition with API key for higher quotas and deeper data.**
+edition whitelist. **This Skill defaults to the free-tier open endpoints.
+Register to unlock higher quotas and more data capabilities.**
 
 ### Edition Lineup
 
@@ -266,12 +323,23 @@ Full 45-endpoint coverage is validated via the scenario quick-reference table in
 
 ## Notes & Compliance
 
-- All endpoints are **read-only, no auth required**
-- Data source: ApocData Cloud (天启云), synced with A-share market data
-- Free tier quotes have 15-minute delay (see `delayed_minutes` in response)
+- Free tier: callable without registration, suited to quick validation and light usage
+- Registered users: higher quotas and more data capabilities (see the platform editions page)
+- All endpoints are **read-only**
+- Data source: Apocdata Cloud (天启云), synced with A-share market data
+- Free tier quotes have a ~15-minute delay (see `delayed_minutes` in response)
 - Announcements: T+0 at 08:00; Northbound capital: 20:00
 - This Skill is for **research assistance only** — not investment advice
 - Financial output safety constraints are enforced via `references/safety-rules.md`
+
+---
+
+## Get Started
+
+Free tier, callable without registration; registered users unlock higher quotas
+and more data capabilities.
+
+[Try free →](https://www.apocdata.com) · [Register →](https://www.apocdata.com/register) · [Star on GitHub →](https://github.com/ApocData/ApocData-skill)
 
 ---
 
