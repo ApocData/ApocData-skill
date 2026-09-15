@@ -1,8 +1,8 @@
 # F. 板块/概念（4 个）
 
-数据源A 与数据源B 双源板块目录与成分股查询。**做主题/概念轮动必备。**
+东方财富与同花顺双源板块目录与成分股查询。**做主题/概念轮动必备。**
 
-## F1. 概念板块（数据源A） `concepts`
+## F1. 概念板块（东方财富） `concepts`
 
 概念板块目录（最新交易日，含当日热度/领涨股；如 `trade_date` 与 `updated_at` 不一致，以 `updated_at` 判断最近刷新时间）。
 
@@ -29,7 +29,7 @@ curl -s "$BASE/concept-stocks?themeCode=000894.DC&limit=50"
 
 ---
 
-## F3. 行业板块（数据源B） `ths-boards`
+## F3. 行业板块（同花顺） `ths-boards`
 
 行业/概念板块指数。
 
@@ -42,7 +42,7 @@ curl -s -G "$BASE/ths-boards" --data-urlencode "q=机器人" --data-urlencode "l
 
 ---
 
-## F4. 行业板块成分（数据源B） `ths-board-stocks`
+## F4. 行业板块成分（同花顺） `ths-board-stocks`
 
 某行业板块的成分股（tsCode 可从 `ths-boards` 获取）。
 

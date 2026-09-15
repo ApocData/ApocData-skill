@@ -147,7 +147,7 @@ curl -s "$BASE/index-daily?tsCode=000300.SH&limit=30"
 
 ## A10. 人气榜 `hot-rank`
 
-数据源A 人气榜（个股热度排名）。
+东方财富人气榜（个股热度排名）。
 
 ```bash
 curl -s "$BASE/hot-rank?limit=30"

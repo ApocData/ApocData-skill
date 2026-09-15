@@ -278,10 +278,10 @@ curl -s "$BASE/stock?symbol=000001"
 
 | 接口                 | 说明          |
 | ------------------ | ----------- |
-| `concepts`         | 数据源A 概念板块目录   |
+| `concepts`         | 东方财富概念板块目录   |
 | `concept-stocks`   | 概念板块成分股     |
-| `ths-boards`       | 数据源B 行业 / 概念板块 |
-| `ths-board-stocks` | 数据源B 行业板块成分股    |
+| `ths-boards`       | 同花顺行业 / 概念板块 |
+| `ths-board-stocks` | 同花顺行业板块成分股    |
 
 ### 新闻与公告（1 活跃，1 已下线）
 
