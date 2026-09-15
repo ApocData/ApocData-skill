@@ -72,7 +72,7 @@ Covers all-market announcements, including Stock Connect constituents, ST and de
 
 ## Why Apocdata?
 
-| | **Apocdata** | tushare | akshare | iFinD |
+| | **Apocdata** | 数据源A | 数据源B | 数据源C |
 |---|---|---|---|---|
 | Announcement parsing | **Structured + AI summary + sentiment** | Raw text | Raw text | Raw text |
 | Access | **Free tier, no registration** | Paid token | Python env + install | Application approval |
@@ -85,6 +85,7 @@ Covers all-market announcements, including Stock Connect constituents, ST and de
 *Comparison based on publicly available info as of 2026-08.*
 
 ---
+
 
 ## Core Capabilities
 

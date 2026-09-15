@@ -78,7 +78,7 @@ curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=
 
 ## 为什么选择天启至数 Apocdata
 
-| | **天启至数 Apocdata** | tushare | akshare | 同花顺 iFinD |
+| | **天启至数 Apocdata** | 数据源A | 数据源B | 数据源C |
 |---|---|---|---|---|
 | 公告解析 | **结构化 + AI 摘要 + 情感倾向** | 原始文本 | 原始文本 | 原始文本 |
 | 接入门槛 | **免费体验额度，无需注册** | 需付费 token | 需 Python 环境 | 需申请审批 |
@@ -91,6 +91,7 @@ curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=
 > *对比基于 2026-08 公开信息与实测。*
 
 ---
+
 
 ## 核心能力
 
@@ -269,7 +270,7 @@ curl -s "$BASE/stock?symbol=000001"
 | `dragon-tiger`     | 龙虎榜单 / 个股上榜历史 |
 | `limit-list`       | 涨停 / 跌停 / 炸板池 |
 | `limit-step`       | 连板天梯         |
-| `hot-rank`         | 东方财富人气榜      |
+| `hot-rank`         | 人气榜      |
 | `hot-money`        | 知名游资名录        |
 | `hot-money-detail` | 游资交易明细        |
 
@@ -277,10 +278,10 @@ curl -s "$BASE/stock?symbol=000001"
 
 | 接口                 | 说明          |
 | ------------------ | ----------- |
-| `concepts`         | 东方财富概念板块目录   |
+| `concepts`         | 数据源A 概念板块目录   |
 | `concept-stocks`   | 概念板块成分股     |
-| `ths-boards`       | 同花顺行业 / 概念板块 |
-| `ths-board-stocks` | 同花顺板块成分股    |
+| `ths-boards`       | 数据源B 行业 / 概念板块 |
+| `ths-board-stocks` | 数据源B 行业板块成分股    |
 
 ### 新闻与公告（1 活跃，1 已下线）
 

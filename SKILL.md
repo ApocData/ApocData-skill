@@ -62,7 +62,7 @@ curl -s "$BASE/stock?symbol=000001"
 | 估值评估 / 「贵不贵」 | `stock` → `financial` → `daily?limit=30` | 看 PE/PB/PEG，结合近期走势判断 |
 | 资金动向追踪 / 「主力在干嘛」 | `moneyflow` → `hsgt` → `hk-hold` → `dragon-tiger` → `hot-money-detail` | 北向 20:00 后更新 |
 | 涨停盘后复盘 / 「今天涨停的共性」 | `limit-list?kind=U` → `limit-step` → `sector-flow` → `hot-money-detail` | date 不传默认最新交易日 |
-| 板块 / 概念热度 | `sector-flow` → `concepts` → `concept-stocks` 或 `ths-boards` → `ths-board-stocks` | 东财与同花顺双源，可交叉验证 |
+| 板块 / 概念热度 | `sector-flow` → `concepts` → `concept-stocks` 或 `ths-boards` → `ths-board-stocks` | 数据源A 与数据源B 双源板块数据，可交叉验证 |
 | 新闻 / 市场事件 | ~~`news?q=关键词`~~ **已下线** → 改用 `announcements` 查正式披露 | `/news` 接口已下线 |
 | 公告 / 事件驱动 | `announcements` → `survey` → `share-float` → `repurchase` → `dividend` | 公告正文可选；`summary` 可能为空，使用前需判空 |
 | 大盘择时 / 宏观判断 | `index-daily?tsCode=000300.SH` → `macro/latest?type=PMI` → `macro/latest?type=CPI` → `hsgt` | 宏观接口最多 12 条 |
@@ -114,7 +114,7 @@ curl -s "$BASE/stock?symbol=000001"
 | `references/group-c-capital.md` | 查资金流、北向资金、两融、龙虎榜、游资 |
 | `references/group-d-limitup.md` | 查涨跌停、连板天梯、板块资金流、筹码分布 |
 | `references/group-e-events.md` | 查公告、机构调研（新闻已下线） |
-| `references/group-f-sector.md` | 查概念板块、同花顺板块、成分股 |
+| `references/group-f-sector.md` | 查概念板块（数据源A）、行业板块（数据源B）、成分股 |
 | `references/group-g-convertible.md` | 查可转债列表、转股价变动 |
 | `references/group-h-quant.md` | 查量化因子注册表、个股技术面因子 |
 | `references/group-i-macro.md` | 查 GDP/CPI/PPI/PMI 宏观数据 |

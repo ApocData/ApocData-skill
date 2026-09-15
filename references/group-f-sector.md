@@ -1,10 +1,10 @@
 # F. 板块/概念（4 个）
 
-东财与同花顺双源板块目录与成分股查询。**做主题/概念轮动必备。**
+数据源A 与数据源B 双源板块目录与成分股查询。**做主题/概念轮动必备。**
 
-## F1. 东财概念板块 `concepts`
+## F1. 概念板块（数据源A） `concepts`
 
-东方财富概念板块目录（最新交易日，含当日热度/领涨股；如 `trade_date` 与 `updated_at` 不一致，以 `updated_at` 判断最近刷新时间）。
+概念板块目录（最新交易日，含当日热度/领涨股；如 `trade_date` 与 `updated_at` 不一致，以 `updated_at` 判断最近刷新时间）。
 
 ```bash
 curl -s "$BASE/concepts?q=AI&limit=30"
@@ -29,22 +29,22 @@ curl -s "$BASE/concept-stocks?themeCode=000894.DC&limit=50"
 
 ---
 
-## F3. 同花顺板块 `ths-boards`
+## F3. 行业板块（数据源B） `ths-boards`
 
-同花顺行业/概念板块指数。
+行业/概念板块指数。
 
 ```bash
 curl -s -G "$BASE/ths-boards" --data-urlencode "q=机器人" --data-urlencode "limit=30"
 # 返回: ts_code, name, count（成分数）, exchange, list_date, type
 ```
 
-**示例问题**：「同花顺有哪些机器人板块？」
+**示例问题**：「有哪些机器人板块？」
 
 ---
 
-## F4. 同花顺板块成分 `ths-board-stocks`
+## F4. 行业板块成分（数据源B） `ths-board-stocks`
 
-某同花顺板块的成分股（tsCode 可从 `ths-boards` 获取）。
+某行业板块的成分股（tsCode 可从 `ths-boards` 获取）。
 
 ```bash
 curl -s "$BASE/ths-board-stocks?tsCode=886108.TI&limit=50"

@@ -12,7 +12,7 @@ curl -s "$BASE/financial?symbol=000001&limit=4"
 #       grossprofit_margin, eps, bps, debt_to_assets, pe_ratio, pb_ratio 等 60+ 字段
 #       注: 上述字段按报告期稀疏填充——最新期可能缺 eps/bps、银行股 grossprofit_margin 常为空，以实际返回为准
 # 注: pe_ratio 为动态 PE（TTM 滚动市盈率），pb_ratio 为市净率（MRQ 最新报告期）
-#     与 Wind/Choice 等终端的 PE 口径可能存在细微差异，以实际返回为准
+#     与其他行情终端的 PE 口径可能存在细微差异，以实际返回为准
 
 # token 优化：只取关键字段（节省 90% token）
 curl -s "$BASE/financial?symbol=000001&limit=4&fields=roe,revenue,net_profit,pe_ratio"
