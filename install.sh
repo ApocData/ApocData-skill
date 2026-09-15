@@ -97,7 +97,7 @@ get_api_key() {
 
 # ---------------- 加载客户端注册表 ----------------
 # 探测 lib/ 位置:本地优先,curl|bash 场景下从 GitHub Raw 拉
-TIANQI_BASE_URL="${TIANQI_BASE_URL:-https://raw.githubusercontent.com/ApocData/ApocData-skill/main}"
+TIANQI_BASE_URL="${TIANQI_BASE_URL:-https://gitee.com/apocdata/ApocData-skill/raw/main}"
 SCRIPT_DIR_ABS="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)" || SCRIPT_DIR_ABS=""
 
 if [[ -n "$SCRIPT_DIR_ABS" && -f "$SCRIPT_DIR_ABS/lib/clients.sh" ]]; then

@@ -161,9 +161,9 @@ curl -s "https://www.apocdata.com/api/blade-dataplatform/open/data/quote?symbol=
 ### macOS / Linux
 
 ```bash
-# v2.0.5 多文件结构，查看最新版本: https://github.com/ApocData/ApocData-skill/releases
+# v2.0.5 多文件结构，查看最新版本: https://gitee.com/apocdata/ApocData-skill/releases
 mkdir -p ~/.claude/skills/apocdata
-curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.5.tar.gz \
+curl -sL https://gitee.com/apocdata/ApocData-skill/repository/archive/v2.0.5.tar.gz \
   | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
@@ -171,7 +171,7 @@ curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.5.tar
 
 ```powershell
 New-Item -ItemType Directory -Force -Path ~\.claude\skills\apocdata
-Invoke-WebRequest -Uri https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.5.tar.gz -OutFile ~\Downloads\apocdata.tar.gz
+Invoke-WebRequest -Uri https://gitee.com/apocdata/ApocData-skill/repository/archive/v2.0.5.tar.gz -OutFile ~\Downloads\apocdata.tar.gz
 tar xzf ~\Downloads\apocdata.tar.gz -C ~\.claude\skills\apocdata --strip-components=1
 ```
 
@@ -403,7 +403,7 @@ curl -s "$BASE/daily?symbol=688017&limit=30" # 近期走势
 
 免费体验额度，无需注册即可调用；注册用户解锁更高额度与更多数据能力。
 
-[免费体验 →](https://www.apocdata.com) · [注册账号 →](https://www.apocdata.com/register) · [Star on GitHub →](https://github.com/ApocData/ApocData-skill)
+[免费体验 →](https://www.apocdata.com) · [注册账号 →](https://www.apocdata.com/register) · [Star on Gitee →](https://gitee.com/apocdata/ApocData-skill)
 
 ---
 

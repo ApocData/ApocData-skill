@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # ApocData Skill — one-line installer
-# Usage: curl -sL https://raw.githubusercontent.com/ApocData/ApocData-skill/v2.0.5/scripts/install.sh | bash
+# Usage: curl -sL https://gitee.com/apocdata/ApocData-skill/raw/main/scripts/install.sh | bash
 set -euo pipefail
 
 VERSION="${APOCDATA_VERSION:-v2.0.5}"
-REPO="ApocData/ApocData-skill"
+REPO="apocdata/ApocData-skill"
 INSTALL_DIR="${HOME}/.claude/skills/apocdata"
 
 echo "🔧 Installing ApocData Skill ${VERSION}..."
@@ -13,8 +13,8 @@ echo "🔧 Installing ApocData Skill ${VERSION}..."
 mkdir -p "${INSTALL_DIR}"
 
 # Download and extract
-echo "📦 Downloading from GitHub..."
-curl -sL "https://github.com/${REPO}/archive/refs/tags/${VERSION}.tar.gz" \
+echo "📦 Downloading from Gitee..."
+curl -sL "https://gitee.com/${REPO}/repository/archive/${VERSION}.tar.gz" \
   | tar xz -C "${INSTALL_DIR}" --strip-components=1
 
 # Verify

@@ -165,7 +165,7 @@ The data service platform is the unified entry point for Apocdata. It provides:
 
 ```bash
 mkdir -p ~/.claude/skills/apocdata
-curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.5.tar.gz \
+curl -sL https://gitee.com/apocdata/ApocData-skill/repository/archive/v2.0.5.tar.gz \
   | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
@@ -195,7 +195,7 @@ Import and use — free tier, no registration needed.
 ### Alternative: install script
 
 ```bash
-curl -sL https://raw.githubusercontent.com/ApocData/ApocData-skill/v2.0.5/scripts/install.sh | bash
+curl -sL https://gitee.com/apocdata/ApocData-skill/raw/main/scripts/install.sh | bash
 ```
 
 ---
@@ -339,7 +339,7 @@ Full 45-endpoint coverage is validated via the scenario quick-reference table in
 Free tier, callable without registration; registered users unlock higher quotas
 and more data capabilities.
 
-[Try free →](https://www.apocdata.com) · [Register →](https://www.apocdata.com/register) · [Star on GitHub →](https://github.com/ApocData/ApocData-skill)
+[Try free →](https://www.apocdata.com) · [Register →](https://www.apocdata.com/register) · [Star on Gitee →](https://gitee.com/apocdata/ApocData-skill)
 
 ---
 

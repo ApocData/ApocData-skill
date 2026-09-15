@@ -16,7 +16,7 @@ description: "A-share data service with structured announcement parsing: every a
 ```bash
 # v2.0.5 多文件结构（推荐）
 mkdir -p ~/.claude/skills/apocdata
-curl -sL https://github.com/ApocData/ApocData-skill/archive/refs/tags/v2.0.5.tar.gz \
+curl -sL https://gitee.com/apocdata/ApocData-skill/repository/archive/v2.0.5.tar.gz \
   | tar xz -C ~/.claude/skills/apocdata --strip-components=1
 ```
 
